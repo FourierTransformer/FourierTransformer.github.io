@@ -205,6 +205,11 @@ h1, h2, h3, h4, h5, h6 {
     letter-spacing: -2px;
 }
 
+h1 {
+    letter-spacing: -1px;
+    line-height: 1;
+}
+
 p, ul, ol, dl {
     margin: 1.6em 0;
 }
