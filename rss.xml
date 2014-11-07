@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[SHAKBLOG]]></title><description><![CDATA[Life Abridged.]]></description><link>http://fouriertransformer.github.io/</link><generator>Ghost 0.5</generator><lastBuildDate>Fri, 07 Nov 2014 05:04:33 GMT</lastBuildDate><atom:link href="http://fouriertransformer.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[ecto: Extended Commit 2 Log]]></title><description><![CDATA[<p>Wow, I usually commit waaay more frequently, so "extended commit logs" shouldn't really be a thing...</p>
+
+<h2 id="nomorewritingoutjson">No more writing out json.</h2>
+
+<p>I was doing it before for easier debugging, but now it's gone. POOF. NADA. ZIP!</p>
+
+<h2 id="refactor4dayz">Refactor4Dayz</h2>
+
+<p>I suppose this happens when code isn't fully designed when it starts getting written (YAY short projects!). Apparently ghost can have multiple pages with the <a href="http://themes.ghost.org/v0.5.3/docs/structure">tag's and author's context</a> (as of ghost v0.5.3). This is the only "brute force" run-until-it-stops code that is used. The alternative was checking which post was written by what author and what tags were associated and counting it all up.</p>
+
+<pre><code>local returnCode
+local i = 2
+repeat
+    local pageDirectory = directory .. "/page/" .. i
+    local pageURL = server .. pageDirectory
+    local handle = io.popen("curl -s -I " .. pageURL)
+    returnCode = handle:read("*l")
+    handle:close()
+    if returnCode:find("HTTP/1.1 200 OK") then
+        os.execute("mkdir " .. pageDirectory)
+        os.execute("curl -s -L -o " .. pageDirectory .. "/index.html " .. pageURL)
+    end
+    i = i + 1
+until returnCode:find("HTTP/1.1 302 Moved Temporarily")
+</code></pre>
+
+<p>As much as I love databases, I didn't really want to write parts of one. This was used for the <code>/author/</code> and <code>/tag/</code> pages. Side|: I had to use the <code>find</code> method as equality checking didn't work on those strings - I think it had something to do with being read from <code>popen</code> but I'm not entirely certain...</p>
+
+<h2 id="sitemaps">Sitemaps?!</h2>
+
+<p>I saw the epitome of JSON and was about to write a custom sitemap generator, however, apparently it's coming with ghost v0.5.4 - which is to be released in the <a href="https://github.com/TryGhost/Ghost/issues/623">next few days!</a> As of now, ecto checks to see if <code>sitemap.xml</code> exists and downloads it if it does!</p>
+
+<h2 id="rssfeeds">RSS Feeds.</h2>
+
+<p>Blerg. This caused some angst. OOTB ghost serves rss feeds as <code>/rss/</code> and not any sort of file (with a type) and you can't really serve rss feeds as an <code>index.html</code>. So, I "compromised" by having ecto write out to <code>rss.xml</code> in the correct directory and relying on the user to modify their ghost theme files accordingly - which involves going through their theme and replacing instances of <code>/rss/</code> with <code>/rss.xml</code>.</p>
+
+<h2 id="404pagenotfound">404 Page Not Found</h2>
+
+<p>This is for the github users - ecto now also creates a <code>404.html</code> page! This was a minor hassel as by default ghost error page stores two images and a css file in a different directory compared to the user files. I'm not entirely sure what happens with custom error pages - so that may be worth looking in to.</p>
+
+<h2 id="gitpush">git push</h2>
+
+<p>The code is up on <a href="https://github.com/FourierTransformer/ecto-1">github</a> and I will likely be writing up a README for ecto tomorrow.</p>]]></description><link>http://fouriertransformer.github.io/ecto-extended-commit-2-log/</link><guid isPermaLink="false">8c612712-fefc-4ac9-99e8-8997a0aded10</guid><category><![CDATA[ecto]]></category><dc:creator><![CDATA[Shakil Thakur]]></dc:creator><pubDate>Fri, 07 Nov 2014 04:58:21 GMT</pubDate></item><item><title><![CDATA[Getting at Ghost's Goodies (or rather handling oAuth)]]></title><description><![CDATA[<p>I finally got my blog up and running and what was the first thing I wanted to do? See what goodies the API had in store! Unfortunately [for me] this required some fancy authorization (oAuth) that I had never encountered before...</p>
+
+<h2 id="readup">Read up!</h2>
+
+<p>First things first, I read through the <a href="https://github.com/TryGhost/Ghost/wiki/%5BWIP%5D-API-Documentation">ghost api</a> and their page on <a href="https://github.com/TryGhost/Ghost/wiki/How-does-oAuth-work-with-Ghost%3F">oAuth</a>. This got me decently far: <em>"I need to make a POST request to get this 'token' thingy"</em></p>
+
+<h2 id="tokentime">Token Time!</h2>
+
+<p>I could make a <code>POST</code> request from the browser, but that's not how any <em>real</em> application would do it. <code>curl</code> is the magic that is needed:</p>
+
+<pre><code>curl --data "grant_type=password&amp;username=[GHOST-EMAIL]&amp;password=[PASSWORD]&amp;client_id=ghost-admin" http://localhost:2368/ghost/api/v0.1/authentication/token/
+</code></pre>
+
+<p>That's quite a command. The <code>--data</code> is the important part that allows you to do a <code>POST</code> request on the URL. And it returns something like this beautiful piece of JSON:</p>
+
+<pre><code>    {
+  "access_token": "juIO6W4bIPemZMOmjuUHdc19Hcw6v29STFTMOHFmvLfGRnWozRuaKLGIZyiWWHETpxjesM50cY5CWX6vKuCa6PxE9tRB7vJdaI61B0f5QERmRuDymWutqzMeS7oCz92TU7Zq1fv30Chw2MOHbBmT3inLTA6JURExSV16G9TKI1b2xzdKM7iTROY9tUpucXwYKOYt5mf7m7u5ojWXwHTowWsYXPgZj1xQK6GBtEY5bEKtdqmlKfiTfVfbwhfbWOs",
+  "refresh_token": "k2UDQAUGKta7d5qaqGa6ZVRY6C3fNgrLF395GyTOldUl7QZd6mS82qMWQzpBcEcdkunnDuglXT0jT39q2N7Y3vUNHjMJSEyFACjML7EhXyUnHhps1CLXCgpo4rVKud6N2dWYWOf5SVt3ApZFRtEsnH1bONYRkWtGZtsaZahd1U7F4S4ub5s9TKtkcUaMz23yPRIHoZAfy1RACekw4xAKbhMQIURYM8mysrinSxvyQ2VYtcOuofwgHFvvrrJvzSG",
+  "expires_in": 3600,
+  "token_type": "Bearer"
+}
+</code></pre>
+
+<h2 id="inserttoken">Insert Token</h2>
+
+<p>Alright, we got the token! Now it's time to use it. Back on the <a href="https://github.com/TryGhost/Ghost/wiki/%5BWIP%5D-API-Documentation">API page</a> you'll notice a lot of commands with <code>POST</code>, <code>GET</code>, and some <code>DELETE</code>. You can run a <code>POST</code> request similar to above using <code>--data</code>, but <code>GET</code> and <code>DELETE</code> are much easier. I wanted to download the database so I could putz around with ghost-cli (which I really hope the maintainers pronounce as ghost chili).</p>
+
+<pre><code>curl -X GET -o data.json http://localhost:2368/ghost/api/v0.1/db/?access_token=juIO6W4bIPemZMOmjuUHdc19Hcw6v29STFTMOHFmvLfGRnWozRuaKLGIZyiWWHETpxjesM50cY5CWX6vKuCa6PxE9tRB7vJdaI61B0f5QERmRuDymWutqzMeS7oCz92TU7Zq1fv30Chw2MOHbBmT3inLTA6JURExSV16G9TKI1b2xzdKM7iTROY9tUpucXwYKOYt5mf7m7u5ojWXwHTowWsYXPgZj1xQK6GBtEY5bEKtdqmlKfiTfVfbwhfbWOs
+</code></pre>
+
+<p>This time around the <code>-X GET</code> is what's doing a <code>GET</code> request and the <code>access_token</code> is just appended to the URL. Similarly a <code>-X DELETE</code> could be used on any API function that supports a <code>DELETE</code> request. Oh, and the <code>-o</code> is just dumping it the data to <code>data.json</code>.</p>
+
+<p>Sweet, now I can use <a href="https://github.com/jeffdonthemic/ghost-cli">ghost-chili</a> and have a better understanding on handling oAuth. </p>]]></description><link>http://fouriertransformer.github.io/getting-ghosts-goodies/</link><guid isPermaLink="false">c310b340-6c03-4957-9594-634f3cdaf37e</guid><category><![CDATA[ecto]]></category><dc:creator><![CDATA[Shakil Thakur]]></dc:creator><pubDate>Thu, 06 Nov 2014 03:23:19 GMT</pubDate></item><item><title><![CDATA[Test Post Please Ignore]]></title><description><![CDATA[<p>I used this post (along with the default one) while creating this theme and testing responsiveness and whatnot. More posts are coming!</p>
+
+<p>Original Text from Development (saved for posterity): <br>
+I'm really just messing around and seeing what happens when I don't tag anything!</p>]]></description><link>http://fouriertransformer.github.io/test-post-please-ignore/</link><guid isPermaLink="false">c8201acc-996e-490c-abe1-b7a52f93ac62</guid><dc:creator><![CDATA[Shakil Thakur]]></dc:creator><pubDate>Sun, 02 Nov 2014 02:04:16 GMT</pubDate></item><item><title><![CDATA[Welcome to Ghost]]></title><description><![CDATA[<p>You're live! Nice. We've put together a little post to introduce you to the Ghost editor and get you started. You can manage your content by signing in to the admin area at <code>&lt;your blog URL&gt;/ghost/</code>. When you arrive, you can select this post from a list on the left and see a preview of it on the right. Click the little pencil icon at the top of the preview to edit this post and read the next section!</p>
+
+<h2 id="gettingstarted">Getting Started</h2>
+
+<p>Ghost uses something called Markdown for writing. Essentially, it's a shorthand way to manage your post formatting as you write!</p>
+
+<p>Writing in Markdown is really easy. In the left hand panel of Ghost, you simply write as you normally would. Where appropriate, you can use <em>shortcuts</em> to <strong>style</strong> your content. For example, a list:</p>
+
+<ul>
+<li>Item number one</li>
+<li>Item number two
+<ul><li>A nested item</li></ul></li>
+<li>A final item</li>
+</ul>
+
+<p>or with numbers!</p>
+
+<ol>
+<li>Remember to buy some milk  </li>
+<li>Drink the milk  </li>
+<li>Tweet that I remembered to buy the milk, and drank it</li>
+</ol>
+
+<h3 id="links">Links</h3>
+
+<p>Want to link to a source? No problem. If you paste in a URL, like <a href="http://ghost.org/">http://ghost.org</a> - it'll automatically be linked up. But if you want to customise your anchor text, you can do that too! Here's a link to <a href="http://ghost.org/">the Ghost website</a>. Neat.</p>
+
+<h3 id="whataboutimages">What about Images?</h3>
+
+<p>Images work too! Already know the URL of the image you want to include in your article? Simply paste it in like this to make it show up:</p>
+
+<p><img src="https://ghost.org/images/ghost.png" alt="The Ghost Logo"></p>
+
+<p>Not sure which image you want to use yet? That's ok too. Leave yourself a descriptive placeholder and keep writing. Come back later and drag and drop the image in to upload:</p>
+
+<h3 id="quoting">Quoting</h3>
+
+<p>Sometimes a link isn't enough, you want to quote someone on what they've said. It was probably very wisdomous. Is wisdomous a word? Find out in a future release when we introduce spellcheck! For now - it's definitely a word.</p>
+
+<blockquote>
+  <p>Wisdomous - it's definitely a word.</p>
+</blockquote>
+
+<h3 id="workingwithcode">Working with Code</h3>
+
+<p>Got a streak of geek? We've got you covered there, too. You can write inline <code>&lt;code&gt;</code> blocks really easily with back ticks. Want to show off something more comprehensive? 4 spaces of indentation gets you there.</p>
+
+<pre><code>.awesome-thing {
+    display: block;
+    width: 100%;
+}
+</code></pre>
+
+<h3 id="readyforabreak">Ready for a Break?</h3>
+
+<p>Throw 3 or more dashes down on any new line and you've got yourself a fancy new divider. Aw yeah.</p>
+
+<hr>
+
+<h3 id="advancedusage">Advanced Usage</h3>
+
+<p>There's one fantastic secret about Markdown. If you want, you can write plain old HTML and it'll still work! Very flexible.</p>
+
+<p><input type="text" placeholder="I'm an input field!"></p>
+
+<p>That should be enough to get you started. Have fun - and let us know what you think :)</p>]]></description><link>http://fouriertransformer.github.io/welcome-to-ghost/</link><guid isPermaLink="false">64530843-1e7d-4037-b9c9-713f30bf9a21</guid><dc:creator><![CDATA[Shakil Thakur]]></dc:creator><pubDate>Sat, 01 Nov 2014 19:51:05 GMT</pubDate></item></channel></rss>

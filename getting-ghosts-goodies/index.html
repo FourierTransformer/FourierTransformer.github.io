@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Getting at Ghost&#x27;s Goodies (or rather handling oAuth) | SHAKBLOG</title>
+    <meta name="description" content="" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <link href='http://fonts.googleapis.com/css?family=Dosis:400|Lato:100,100italic,300|Open+Sans|Source+Code+Pro' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css?v=bdeb5acbee" />
+    <link rel="icon" type="image/ico" href="/favicon.ico" />
+
+    <link rel="canonical" href="http://fouriertransformer.github.io/getting-ghosts-goodies/" />
+    
+    <meta property="og:site_name" content="SHAKBLOG" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Getting at Ghost's Goodies (or rather handling oAuth)" />
+    <meta property="og:description" content="I finally got my blog up and running and what was the first thing I wanted to do? See what goodies the API had in store! Unfortunately [for me] this required some fancy authorization (oAuth) that I had never encountered..." />
+    <meta property="og:url" content="http://fouriertransformer.github.io/getting-ghosts-goodies/" />
+    <meta property="article:published_time" content="2014-11-06T03:23:19.010Z" />
+    <meta property="article:modified_time" content="2014-11-06T03:23:19.009Z" />
+    <meta property="article:tag" content="ecto" />
+    
+    <meta name="twitter:card" content="content" />
+    <meta name="twitter:title" content="Getting at Ghost's Goodies (or rather handling oAuth)" />
+    <meta name="twitter:description" content="I finally got my blog up and running and what was the first thing I wanted to do? See what goodies the API had in store! Unfortunately [for me] this required some fancy authorization (oAuth) that I had never encountered..." />
+    <meta name="twitter:url" content="http://fouriertransformer.github.io/getting-ghosts-goodies/" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "Article",
+    "publisher": "SHAKBLOG",
+    "author": {
+        "@type": "Person",
+        "name": "Shakil Thakur",
+        "image": "http://fouriertransformer.github.io/content/images/2014/11/shakil1.jpg",
+        "url": "http://fouriertransformer.github.io/author/shakil",
+        "sameAs": null
+    },
+    "headline": "Getting at Ghost's Goodies (or rather handling oAuth)",
+    "url": "http://fouriertransformer.github.io/getting-ghosts-goodies/",
+    "datePublished": "2014-11-06T03:23:19.010Z",
+    "dateModified": "2014-11-06T03:23:19.009Z",
+    "keywords": "ecto",
+    "description": "I finally got my blog up and running and what was the first thing I wanted to do? See what goodies the API had in store! Unfortunately [for me] this required some fancy authorization (oAuth) that I had never encountered"
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.5" />
+    <link rel="alternate" type="application/rss+xml" title="SHAKBLOG" href="/rss/" />
+</head>
+<body class="post-template tag-ecto">
+    
+
+    
+
+<header class="site-head" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+            <nav class="blog-nav">
+                <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/projects/">Projects</a></li>
+                <li><a href="/about/">About</a></li>
+                </ul>
+            </nav>
+            
+            <h1 class="blog-title"><a href="http://fouriertransformer.github.io">SHAKBLOG</a></h1>
+            <h2 class="blog-description">Life Abridged.</h2>
+            <!-- <h2 class="blog-subtext">I am not a web developer.</h2> -->
+        </div>
+    </div>
+</header>
+
+<main class="content" role="main">
+
+    <article class="post tag-ecto">
+
+
+
+            
+
+            <span class="post-meta"><time datetime="2014-11-05">05 Nov 2014</time> on <a href="/tag/ecto/">ecto</a></span>
+
+            <h1 class="post-title">Getting at Ghost&#x27;s Goodies (or rather handling oAuth)</h1>
+
+            <section class="post-content">
+                <p>I finally got my blog up and running and what was the first thing I wanted to do? See what goodies the API had in store! Unfortunately [for me] this required some fancy authorization (oAuth) that I had never encountered before...</p>
+
+<h2 id="readup">Read up!</h2>
+
+<p>First things first, I read through the <a href="https://github.com/TryGhost/Ghost/wiki/%5BWIP%5D-API-Documentation">ghost api</a> and their page on <a href="https://github.com/TryGhost/Ghost/wiki/How-does-oAuth-work-with-Ghost%3F">oAuth</a>. This got me decently far: <em>"I need to make a POST request to get this 'token' thingy"</em></p>
+
+<h2 id="tokentime">Token Time!</h2>
+
+<p>I could make a <code>POST</code> request from the browser, but that's not how any <em>real</em> application would do it. <code>curl</code> is the magic that is needed:</p>
+
+<pre><code>curl --data "grant_type=password&amp;username=[GHOST-EMAIL]&amp;password=[PASSWORD]&amp;client_id=ghost-admin" http://localhost:2368/ghost/api/v0.1/authentication/token/
+</code></pre>
+
+<p>That's quite a command. The <code>--data</code> is the important part that allows you to do a <code>POST</code> request on the URL. And it returns something like this beautiful piece of JSON:</p>
+
+<pre><code>    {
+  "access_token": "juIO6W4bIPemZMOmjuUHdc19Hcw6v29STFTMOHFmvLfGRnWozRuaKLGIZyiWWHETpxjesM50cY5CWX6vKuCa6PxE9tRB7vJdaI61B0f5QERmRuDymWutqzMeS7oCz92TU7Zq1fv30Chw2MOHbBmT3inLTA6JURExSV16G9TKI1b2xzdKM7iTROY9tUpucXwYKOYt5mf7m7u5ojWXwHTowWsYXPgZj1xQK6GBtEY5bEKtdqmlKfiTfVfbwhfbWOs",
+  "refresh_token": "k2UDQAUGKta7d5qaqGa6ZVRY6C3fNgrLF395GyTOldUl7QZd6mS82qMWQzpBcEcdkunnDuglXT0jT39q2N7Y3vUNHjMJSEyFACjML7EhXyUnHhps1CLXCgpo4rVKud6N2dWYWOf5SVt3ApZFRtEsnH1bONYRkWtGZtsaZahd1U7F4S4ub5s9TKtkcUaMz23yPRIHoZAfy1RACekw4xAKbhMQIURYM8mysrinSxvyQ2VYtcOuofwgHFvvrrJvzSG",
+  "expires_in": 3600,
+  "token_type": "Bearer"
+}
+</code></pre>
+
+<h2 id="inserttoken">Insert Token</h2>
+
+<p>Alright, we got the token! Now it's time to use it. Back on the <a href="https://github.com/TryGhost/Ghost/wiki/%5BWIP%5D-API-Documentation">API page</a> you'll notice a lot of commands with <code>POST</code>, <code>GET</code>, and some <code>DELETE</code>. You can run a <code>POST</code> request similar to above using <code>--data</code>, but <code>GET</code> and <code>DELETE</code> are much easier. I wanted to download the database so I could putz around with ghost-cli (which I really hope the maintainers pronounce as ghost chili).</p>
+
+<pre><code>curl -X GET -o data.json http://localhost:2368/ghost/api/v0.1/db/?access_token=juIO6W4bIPemZMOmjuUHdc19Hcw6v29STFTMOHFmvLfGRnWozRuaKLGIZyiWWHETpxjesM50cY5CWX6vKuCa6PxE9tRB7vJdaI61B0f5QERmRuDymWutqzMeS7oCz92TU7Zq1fv30Chw2MOHbBmT3inLTA6JURExSV16G9TKI1b2xzdKM7iTROY9tUpucXwYKOYt5mf7m7u5ojWXwHTowWsYXPgZj1xQK6GBtEY5bEKtdqmlKfiTfVfbwhfbWOs
+</code></pre>
+
+<p>This time around the <code>-X GET</code> is what's doing a <code>GET</code> request and the <code>access_token</code> is just appended to the URL. Similarly a <code>-X DELETE</code> could be used on any API function that supports a <code>DELETE</code> request. Oh, and the <code>-o</code> is just dumping it the data to <code>data.json</code>.</p>
+
+<p>Sweet, now I can use <a href="https://github.com/jeffdonthemic/ghost-cli">ghost-chili</a> and have a better understanding on handling oAuth. </p>
+            </section>
+
+            <footer class="post-footer">
+
+                <section class="author">
+                    <img class="author-image" src="/content/images/2014/11/shakil1.jpg">
+                    <h4>Shakil Thakur</h4>
+                    <p>Finding Magic Everywhere</p>
+                    <ul class="author-meta clearfix">
+                        
+                        
+                    </ul>
+                </section>
+
+                <section class="share">
+                    <h4>Share this post</h4>
+                    <a class="icon-twitter" href="https://twitter.com/share?text=Getting%20at%20Ghost's%20Goodies%20(or%20rather%20handling%20oAuth)&amp;url=http://fouriertransformer.github.io/getting-ghosts-goodies/"
+                        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                        <span class="hidden">Twitter</span>
+                    </a>
+                    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://fouriertransformer.github.io/getting-ghosts-goodies/"
+                        onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                        <span class="hidden">Facebook</span>
+                    </a>
+                    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://fouriertransformer.github.io/getting-ghosts-goodies/"
+                       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                        <span class="hidden">Google+</span>
+                    </a>
+                </section>
+
+            </footer>
+
+
+    </article>
+
+</main>
+
+
+    <footer class="site-footer">
+        <div class="inner">
+             <section class="copyright">&copy; 2014 Shakil Thakur</section>
+             <section class="poweredby">Proudly created with <a class="icon-ghost" href="https://ghost.org">Ghost</a></section>
+        </div>
+        <a class="subscribe icon-feed" href="/rss.xml"><span class="tooltip">Subscribe!</span></a>
+    </footer>
+
+
+</body>
+</html>
