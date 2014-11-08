@@ -452,7 +452,6 @@ a.blog-logo img {
     max-width: 700px;
     margin: 4rem auto;
     /*padding-bottom: 4rem;*/
-    border-bottom: #A37B45 1px solid;
     word-break: break-word;
     hyphens: auto;
 }
@@ -704,6 +703,7 @@ div.site-head-content.inner {
 /* The author credit area after the post */
 .post-footer {
     border-top: #A37B45 1px solid;
+    border-bottom: #A37B45 1px solid;
     position: relative;
     display: flex;
     padding: 4rem 0;
