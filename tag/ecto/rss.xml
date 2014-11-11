@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[ecto - SHAKBLOG]]></title><description><![CDATA[Life Abridged.]]></description><link>http://shakilthakur.com/</link><generator>Ghost 0.5</generator><lastBuildDate>Sat, 08 Nov 2014 17:28:09 GMT</lastBuildDate><atom:link href="http://shakilthakur.com/tag/ecto/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[ecto: Extended Commit 2 Log]]></title><description><![CDATA[<p>Wow, I usually commit waaay more frequently, so "extended commit logs" shouldn't really be a thing...</p>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[ecto - SHAKBLOG]]></title><description><![CDATA[Life Abridged.]]></description><link>http://shakilthakur.com/</link><generator>Ghost 0.5</generator><lastBuildDate>Tue, 11 Nov 2014 03:27:42 GMT</lastBuildDate><atom:link href="http://shakilthakur.com/tag/ecto/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[ecto is out there!]]></title><description><![CDATA[<p>I released my static site generator for <a href="http://ghost.org/">Ghost</a> into the wild! Sure, the code has been online for a few days, but we all know it's the <code>README</code> that makes the program!</p>
+
+<p>It's currently available on <a href="https://github.com/FourierTransformer/ecto-1">GitHub</a>.</p>
+
+<h2 id="background">Background</h2>
+
+<p>I created a blog theme wwaaayy back when in late August when Paul and I were talking about websites. I revived it in late October and decided to launch November 2nd, 2014. A blog that would've launched on that wonderful day, if the static site generator I used had worked... If only the RSS feeds, static pages, custom 404's, and the odd css issue were a non-issue - but, they weren't...</p>
+
+<h2 id="creation">Creation</h2>
+
+<p>For the next two days, I peiced together a script that was able to pull together enough of a website to make it publishable and then "<a href="http://fouriertransformer.github.io/">http://fouriertransformer.github.io</a>" was born. It had posts and pages and could navigate without any styling issues!</p>
+
+<h2 id="butwaittheresmore">But wait, there's more!</h2>
+
+<p>This wasn't enough. I pushed forward, optimized, refactored, got a good handle on RSS feeds, and added a custom 404 page. All of which was can be read in slightly more detail in my <a href="http://shakilthakur.com/ecto-extended-commit-2-log/">extended commit 2 log</a> for ecto. I added some <code>CNAME</code> for github and it was good to go.</p>
+
+<h2 id="writingthereadme">Writing the <code>README</code></h2>
+
+<p>I always figure this should be a quick thing, but I find myself spending quite a bit of time on it - perhaps for the better! But now that it's done, I feel as people can use it and hopefully make their static-sites with it!</p>
+
+<h2 id="thefuture">THE FUTURE</h2>
+
+<p>From here on out, I can only hope people will use it. I know I will for as long as I'm still writing this blog. As far as updates, if I (or anyone really) have a need for anything or find a bug, I'll definitely update ecto and if if proves stable enough I'll push it up to luarocks and have a party!</p>]]></description><link>http://shakilthakur.com/ecto-is-out-there/</link><guid isPermaLink="false">6ce650c6-bf5d-4300-939d-27ef3b152b48</guid><category><![CDATA[ecto]]></category><dc:creator><![CDATA[Shakil Thakur]]></dc:creator><pubDate>Tue, 11 Nov 2014 00:57:26 GMT</pubDate></item><item><title><![CDATA[ecto: Extended Commit 2 Log]]></title><description><![CDATA[<p>Wow, I usually commit waaay more frequently, so "extended commit logs" shouldn't really be a thing...</p>
 
 <h2 id="nomorewritingoutjson">No more writing out json.</h2>
 
@@ -9,9 +31,9 @@
 
 <p>I suppose this happens when code isn't fully designed when it starts getting written (YAY short projects!). Apparently ghost can have multiple pages with the <a href="http://themes.ghost.org/v0.5.3/docs/structure">tag's and author's context</a> (as of ghost v0.5.3). This is the only "brute force" run-until-it-stops code that is used. The alternative was checking which post was written by what author and what tags were associated and counting it all up.</p>
 
-<pre><code>local returnCode
-local i = 2
-repeat
+<pre><code class="lang-lua">local returnCode  
+local i = 2  
+repeat  
     local pageDirectory = directory .. "/page/" .. i
     local pageURL = server .. pageDirectory
     local handle = io.popen("curl -s -I " .. pageURL)
@@ -22,7 +44,7 @@ repeat
         os.execute("curl -s -L -o " .. pageDirectory .. "/index.html " .. pageURL)
     end
     i = i + 1
-until returnCode:find("HTTP/1.1 302 Moved Temporarily")
+until returnCode:find("HTTP/1.1 302 Moved Temporarily")  
 </code></pre>
 
 <p>As much as I love databases, I didn't really want to write parts of one. This was used for the <code>/author/</code> and <code>/tag/</code> pages. Side|: I had to use the <code>find</code> method as equality checking didn't work on those strings - I think it had something to do with being read from <code>popen</code> but I'm not entirely certain...</p>
