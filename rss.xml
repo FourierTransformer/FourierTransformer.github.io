@@ -1,5 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[SHAKBLOG]]></title><description><![CDATA[Life Abridged.]]></description><link>http://shakilthakur.com/</link><generator>Ghost 0.5</generator><lastBuildDate>Tue, 11 Nov 2014 03:27:43 GMT</lastBuildDate><atom:link href="http://shakilthakur.com/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[ecto is out there!]]></title><description><![CDATA[<p>I released my static site generator for <a href="http://ghost.org/">Ghost</a> into the wild! Sure, the code has been online for a few days, but we all know it's the <code>README</code> that makes the program!</p>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[SHAKBLOG]]></title><description><![CDATA[Life Abridged.]]></description><link>http://shakilthakur.com/</link><generator>Ghost 0.5</generator><lastBuildDate>Mon, 17 Nov 2014 03:29:13 GMT</lastBuildDate><atom:link href="http://shakilthakur.com/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[TableSalt: optimizing code layout for speed in lua]]></title><description><![CDATA[<p>A while back I wrote <a href="http://github.com/fouriertransformer/TableSalt">TableSalt</a> - a constraint satisfaction framework written in [currently pure] lua. Every now and again I'll revisit it and try to make it run faster and get rid of any bugs found along the way. For benchmarking I use my SudokuSolver on a test of <a href="http://norvig.com/top95.txt">95 sudoku puzzles</a>.</p>
+
+<p>My goal is a 100ms average. Back in May 2014 I was chilling at 337ms. Before these layout changes, I was at 253ms. Now I'm at 222ms and am only inching ever closer!</p>
+
+<h2 id="originalcodelayout">Original Code Layout</h2>
+
+<p>Initially I had a <code>cell</code> object, this is best thought of as an empty "cell" in sudoku or a variable in <a href="http://en.wikipedia.org/wiki/Constraint_satisfaction_problem">constraint satisfaction problems</a>. Each cell has a domain, value, and a reference to each of the constraints it is associated with.</p>
+
+<p>As such the code was pretty straigtforward:  </p>
+
+<pre><code class="lang-lua">function cell:initialize(domain)  
+     self.domain = domain
+     self.value = nil
+     self.constraints = {}
+ end
+</code></pre>
+
+<p>I needed a table of cells to keep track of all the cells:  </p>
+
+<pre><code class="lang-lua">self.cells = {}  
+for i = 1, self.size do  
+    self.cells[i] = cell:new({unpack(domain)})
+end  
+</code></pre>
+
+<p>The <code>{unpack()}</code> created a deepcopy for each <code>cell</code>'s domain. <code>unpack</code> is a built-in lua function that explodes a table, the curly brackets around it create a new version and a deep copy is born!</p>
+
+<h2 id="thebackup">The Backup</h2>
+
+<p>While writing TableSalt, I wrote a ForwardCheck (or <a href="http://en.wikipedia.org/wiki/Look-ahead_(backtracking)">look-ahead</a>) function that needed to backup and restore the current state of the cells. Easy enough:  </p>
+
+<pre><code class="lang-lua">function TableSalt:backupCells()  
+    local serial = {{}, {}}
+    for i = 1, self.size do
+        serial[1][i] = {unpack(self.cells[i].domain)}
+        serial[2][i] = self.cells[i].value
+    end
+    return serial
+end
+
+function TableSalt:restoreCells(serial)  
+    for i=1, self.size do
+        self.cells[i].domain = serial[1][i]
+        self.cells[i].value = serial[2][i]
+    end
+end  
+</code></pre>
+
+<h2 id="theproblem">The Problem.</h2>
+
+<p>This was slow. When I ran the code against a profiler, the code backup and <code>AllDiff</code> constraint were usually the prime culprits of wasting time. On my [unrealistic?] goal towards 100ms, wasting time on backups and restores was not an option. I read up on <a href="http://www.lua.org/gems/sample.pdf">optimizing lua code</a> and posted on <a href="http://stackoverflow.com/questions/26453830/optimizing-a-lua-table-backup">stackoverflow</a> looking for help.</p>
+
+<h2 id="speedingitallup">SPEEDING IT ALL UP!</h2>
+
+<p>I got rid of the cell class. Arguably, it's bad code design, but I did it in the name of speed. Here's what the initializer code became:  </p>
+
+<pre><code class="lang-lua">self.cellValue = {}  
+self.cellDomain = {}  
+self.cellConstraint = {}  
+for i = 1, self.size do  
+    self.cellConstraint[i] = {}
+    self.cellDomain[i] = {unpack(domain)}
+end  
+</code></pre>
+
+<p>and as some of you lua aficionados might notice - I could've used a <code>self.cells = {}</code> and made each of those tables into <code>self.cells.value</code>, <code>self.cells.domain</code>, and <code>self.cells.constrains</code>, but I would gain ~4ms if I did so. If I ever get sub-100ms, I may consider adding it back in for the sake of better code design.</p>
+
+<p>Anyway, this allowed me to do was create clones quickly and avoid the need to "restore" the values to their initial state. Now the backup function (which looks VERY similar to before) is:  </p>
+
+<pre><code class="lang-lua">local function backupCells(cellDomain, cellValue)  
+    local cellDomain, cellValue = cellDomain, cellValue
+    local serial = {{}, {}}
+    for i = 1, #cellDomain do
+        serial[1][i] = {unpack(cellDomain[i])}
+        serial[2][i] = cellValue[i]
+    end
+    return serial
+end  
+</code></pre>
+
+<p>and restore has become a quick two-liner:  </p>
+
+<pre><code class="lang-lua">self.cellDomain = cellCopy[1]  
+self.cellValue = cellCopy[2]  
+</code></pre>
+
+<p>This provided a <em>fairly</em> significant speedup! On the sudoku benchmark, I now average ~222ms/puzzle - a whopping <strong>31ms</strong> speedup from the 253ms before it.</p>
+
+<h2 id="thefuture">The Future</h2>
+
+<p>I'm starting to think I'm reaching the end of pure-lua optimizations. I want to convert the cell backup and parts of the <code>AllDiff</code> function to C and see if that offers any significant speedup. If anyone has any other suggestions for speed (the code can be found on <a href="https://github.com/FourierTransformer/TableSalt">GitHub</a>) - please let me know I'd love to hear it!</p>]]></description><link>http://shakilthakur.com/optimizing-code-layout-for-speed/</link><guid isPermaLink="false">15c55e33-118b-4762-a904-93eff2082678</guid><category><![CDATA[TableSalt]]></category><dc:creator><![CDATA[Shakil Thakur]]></dc:creator><pubDate>Mon, 17 Nov 2014 00:36:59 GMT</pubDate></item><item><title><![CDATA[ecto is out there!]]></title><description><![CDATA[<p>I released my static site generator for <a href="http://ghost.org/">Ghost</a> into the wild! Sure, the code has been online for a few days, but we all know it's the <code>README</code> that makes the program!</p>
 
 <p>It's currently available on <a href="https://github.com/FourierTransformer/ecto-1">GitHub</a>.</p>
 
@@ -9,7 +99,7 @@
 
 <h2 id="creation">Creation</h2>
 
-<p>For the next two days, I peiced together a script that was able to pull together enough of a website to make it publishable and then "<a href="http://fouriertransformer.github.io/">http://fouriertransformer.github.io</a>" was born. It had posts and pages and could navigate without any styling issues!</p>
+<p>For the next two days, I pieced together a script that was able to pull together enough of a website to make it publishable and then "<a href="http://fouriertransformer.github.io/">http://fouriertransformer.github.io</a>" was born. It had posts and pages and could navigate without any styling issues!</p>
 
 <h2 id="butwaittheresmore">But wait, there's more!</h2>
 
