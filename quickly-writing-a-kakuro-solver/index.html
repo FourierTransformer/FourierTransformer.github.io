@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Quickly Writing a Kakuro Solver | SHAKBLOG</title>
+    <meta name="description" content="" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <link href='http://fonts.googleapis.com/css?family=Dosis:400|Lato:100,100italic,300|Open+Sans|Source+Code+Pro' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css?v=71f584cf59" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/monokai.css?v=71f584cf59" />
+    <link rel="icon" type="image/ico" href="/favicon.ico" />
+
+    <script src="/assets/js/rainbow.min.js?v=71f584cf59"></script>
+    <script src="/assets/js/lua.js?v=71f584cf59"></script>
+
+    <link rel="canonical" href="http://shakilthakur.com/quickly-writing-a-kakuro-solver/" />
+    
+    <meta property="og:site_name" content="SHAKBLOG" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Quickly Writing a Kakuro Solver" />
+    <meta property="og:description" content="I finished my Kakuro Solver in a little over a weekend. I spent MONTHS working on my Sudoku Solver (and TableSalt...) and managed a complete overhaul of Kakuro in a few days. This was accomplished through good code design and..." />
+    <meta property="og:url" content="http://shakilthakur.com/quickly-writing-a-kakuro-solver/" />
+    <meta property="article:published_time" content="2014-11-27T03:26:20.450Z" />
+    <meta property="article:modified_time" content="2014-11-27T03:26:20.448Z" />
+    
+    <meta name="twitter:card" content="content" />
+    <meta name="twitter:title" content="Quickly Writing a Kakuro Solver" />
+    <meta name="twitter:description" content="I finished my Kakuro Solver in a little over a weekend. I spent MONTHS working on my Sudoku Solver (and TableSalt...) and managed a complete overhaul of Kakuro in a few days. This was accomplished through good code design and..." />
+    <meta name="twitter:url" content="http://shakilthakur.com/quickly-writing-a-kakuro-solver/" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "Article",
+    "publisher": "SHAKBLOG",
+    "author": {
+        "@type": "Person",
+        "name": "Shakil Thakur",
+        "image": "http://shakilthakur.com/content/images/2014/11/shakil1.jpg",
+        "url": "http://shakilthakur.com/author/shakil",
+        "sameAs": null
+    },
+    "headline": "Quickly Writing a Kakuro Solver",
+    "url": "http://shakilthakur.com/quickly-writing-a-kakuro-solver/",
+    "datePublished": "2014-11-27T03:26:20.450Z",
+    "dateModified": "2014-11-27T03:26:20.448Z",
+    "description": "I finished my Kakuro Solver in a little over a weekend. I spent MONTHS working on my Sudoku Solver (and TableSalt...) and managed a complete overhaul of Kakuro in a few days. This was accomplished through good code design and"
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.5" />
+    <link rel="alternate" type="application/rss+xml" title="SHAKBLOG" href="/rss/" />
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-56519164-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
+</head>
+<body class="post-template">
+
+    
+
+<header class="site-head" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+            
+            <h1 class="blog-title"><a href="http://shakilthakur.com">SHAKBLOG</a></h1>
+            <h2 class="blog-description">Life Abridged.</h2>
+            <!-- <h2 class="blog-subtext">I am not a web developer.</h2> -->
+            <nav class="blog-nav">
+                <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/projects/">Projects</a></li>
+                <li><a href="/about/">About</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</header>
+<main class="content" role="main">
+
+    <article class="post">
+
+
+
+            
+
+            <span class="post-meta"><time datetime="2014-11-26">26 Nov 2014</time> </span>
+
+            <h1 class="post-title">Quickly Writing a Kakuro Solver</h1>
+
+            <section class="post-content">
+                <p>I finished my Kakuro Solver in a little over a <em>weekend</em>. I spent MONTHS working on my Sudoku Solver (and TableSalt...) and managed a complete overhaul of Kakuro in a few days. This was accomplished through good code design and practices! (not to mention using a pre-existing framework to do some heavy lifting!)</p>
+
+<p>I've gone over my process (more high level) and some of the things I learned in school and from friends that helped make it easy to do!</p>
+
+<h2 id="gettingstarted">Getting Started!</h2>
+
+<p>A few days back I <a href="/tablesalt-final-forward-check-features"><strong>finally</strong></a> finished TableSalt (or at least got it in a working state - there's still more to do) - and what was there to do with the it after it was done? Cook up something cool! My next step was <a href="http://en.wikipedia.org/wiki/Kakuro">Kakuro</a> - an interesting crossword-esque mathematical puzzle. It can be setup as a Constraint Problem, so it became the next big problem to solve. Kakuro added a "sum" component to my already existing <code>allDiff</code> constraint (found in TableSalt) and the <code>allDiffSum</code> constraint was born! The idea was taken from Helmut Simonis' wonderful paper on <a href="http://4c.ucc.ie/~hsimonis/kakuro%20modref08.pdf">Kakuro as a Constraint Problem</a>.</p>
+
+<h2 id="butialreadystartedthis">but I already started this...</h2>
+
+<p><a href="https://github.com/FourierTransformer/KakuroSolver/tree/dc4ddf2bf9b8dd0bf862cdc81cc3c3d06616a377">I did,</a> but it looks like I never fully committed after I started the parser...! And it didn't really work... I had taken a stab at this earlier when TableSalt was in it's infancy. I got the old code working with the [freshly modularized TableSalt] and realized it was a cluster. Fairly confusing code with few comments and no documentation (heck <code>allDiffSum.lua</code> still looks a little bleak, which I should get to like NOW). So, I spent very little time trying to fix it and quickly scrapped it and moved on.</p>
+
+<blockquote>
+  <p><strong>KILL IT WITH FIRE!</strong> <em>(shhh the analyzer was actually pretty legit)</em> <sub><sup>and don't be afraid to rewrite!</sup></sub></p>
+</blockquote>
+
+<h2 id="theparserwasgarbage">The Parser was garbage.</h2>
+
+<p>At some point, most programmers will have to write some form of a parser - for the simple reason that people need to provide input and we need some way to read in and then analyze what that the input means.</p>
+
+<p>My parser was garbage. No comments, crazy code, no idea how it worked (oh and it <strong>DIDN'T</strong> a lot of the time) and I'm pretty sure it passed on poorly parsed puzzles to the analyzer without a second thought.  </p>
+
+<blockquote>
+  <p>Error handling is like magic sauce for parsers. If you error out at the parser, there is a very clear "This is what I can and can't do" and you can prevent pain and suffering later on.</p>
+</blockquote>
+
+<p>So, I scrapped it. I recalled how it was supposed to work: read in the puzzle file line by line, split up the code via "segment" (the stuff between the pipes), figure out what's in the segment, and send it off to the correct table. The tables then went off for analysis! The design was good, the implementation was terrible - and BAM - a quick rewrite with comments and error handling was all it needed and we're good to go!</p>
+
+<h4 id="thekakuropuzzlefromwikipediaasatxtfile">The Kakuro Puzzle from WikiPedia as a txt file</h4>
+
+<pre><code class="lang-none"> 0\ 0|23\ 0|30\ 0| 0\ 0| 0\ 0|27\ 0|12\ 0|16\ 0
+ 0\16|  0  |  0  | 0\ 0|17\24|  0  |  0  |  0
+ 0\17|  0  |  0  |15\29|  0  |  0  |  0  |  0
+ 0\35|  0  |  0  |  0  |  0  |  0  |12\ 0| 0\ 0
+ 0\ 0| 0\ 7|  0  |  0  | 7\ 8|  0  |  0  | 7\ 0
+ 0\ 0|11\ 0|10\16|  0  |  0  |  0  |  0  |  0
+ 0\21|  0  |  0  |  0  |  0  | 0\ 5|  0  |  0
+ 0\ 6|  0  |  0  |  0  | 0\ 0| 0\ 3|  0  |  0
+</code></pre>
+
+<h2 id="theanalyzer">The Analyzer</h2>
+
+<p>Cool. CoolCoolCool. I have all the values in the tables! Now, I just need to trun them into constraints. My old code was fairly uncommented, but this worked well enough as the design around it hadn't changed. I brought back a couple of for loops, added a couple of comments, and it was done.</p>
+
+<blockquote>
+  <p>Reusing bits of code when the application is right can be a good idea.</p>
+</blockquote>
+
+<h2 id="solvingthingsfast">solving things fast</h2>
+
+<p>Kakuro is an interesting little game that one of my friends played a lot of back in high school. He always said it was much better than sudoku because it was a little more challenging and not as boring. Having to sum the values in the boxes as well as ensuring they are all different - a fairly simple concept to say the least.</p>
+
+<p>Solving a puzzle requires determining which combination of unique numbers can be used to sum to a number in a given length. Last time, I attempted to write my own Kakuro Combination finder. <em>That wasted a lot of time</em> (a couple of days/weeks would be my bet) and luckily the internet is a thing and I managed to find a javascript version on <a href="http://codegolf.stackexchange.com/questions/35562/kakuro-combinations">stackexchange</a> that was easy enough to follow and ported it over to Lua. A <strong>major</strong> time savings in my opinion as I'm not mathemagical enough to write such a thing.</p>
+
+<blockquote>
+  <p>Before you write some code, always poke around the interwebs, someone likely already wrote it!</p>
+</blockquote>
+
+<h2 id="weredoneright">We're done, right?!</h2>
+
+<p>Nope - but we're getting there! I just subbed in someone else's code and have no idea how it works - let alone if it works and then I'm throwing it into a mostly untested framework.</p>
+
+<blockquote>
+  <p>Always write Unit Tests First.</p>
+</blockquote>
+
+<p>and start small. Don't send in an entire Kakuro Puzzle and claim it's a test. You'll go mad debugging that. Try something simple like trying to sum to 5 with one number:  </p>
+
+<pre><code class="lang-lua">print(KakuroCombinator(5, 1))  
+</code></pre>
+
+<p>Good. Now make sure your constraint that's implementing your combination finder works as expected as well. (Don't worry it's only 4 lines of code)  </p>
+
+<pre><code class="lang-lua">kakuro = TableSalt:new({1, 2, 3, 4, 5, 6, 7, 8, 9},  1)  
+kakuro:addConstraintByIDs({1}, allDiffSum, 5)  
+kakuro:solve()  
+kakuro:print()  
+</code></pre>
+
+<p>From here we move on to do some more things like adding values in two segments, dealing with combinations vs permutations, and slowly working our way up to a full puzzle.</p>
+
+<p>I should've also written tests for the parser and the analyzer but I didn't. It was a choice I made and there are couple of reasons for it: </p>
+
+<ul>
+<li>The parser and analyzer aren't too complex - it's not like the code is being sent into this vortex of insanity. It's just a couple <code>if</code>'s and <code>for</code>'s.</li>
+<li>They likely wont be used outside my 14 testing puzzles whereas the <code>allDiffSum</code> constraint could be used in many other situations (MOAR PUZZLE PROBLEMS!)</li>
+</ul>
+
+<p>Some people would argue this is bad coding practice - and they're not wrong. Perhaps if I have some time - I'll go back in and write some tests for it - but for now <em>I'm good</em>.</p>
+
+<h2 id="sowheresthatfancyunittestinglibrary">So, where's that fancy unit testing library?</h2>
+
+<p>For a long time I associated Unit tests with some sort of unit-testing library, possibly because I originally exposed to it via junit with Java early on. And while it's <strong>highly</strong> recommended and <em>incredibly</em> useful to have a unit testing library a non-self-verifying <code>print()</code> statement should suffice at the beginning and turning it into a full on proper unit test isn't all too hard (in most languages):</p>
+
+<pre><code class="lang-lua">it("should all equal 5", function()  
+    kakuro = TableSalt:new({1, 2, 3, 4, 5, 6, 7, 8, 9},  1)
+    kakuro:addConstraintByIDs({1}, allDiffSum, 5)
+    kakuro:solve()
+    assert.tcompare(kakuro:getAllValues(), {5})
+end)  
+</code></pre>
+
+<p>This is part of a development process known as Test Driven Development. TDD SAVES SO MUCH TIME. It can also help alleviate concerns when refactoring - can't be stressed enough and is one of the most important things college taught me that changed the how I think about  <em>and write</em> code.</p>
+
+<blockquote>
+  <p>One of the paradigms of Test Driven Development (TDD) is that the expected input/output of a function is known and the code design is planned out before the code is written.</p>
+</blockquote>
+
+<h2 id="sweet">SWEET!</h2>
+
+<p>The tests are working and the code is complete. It's time to SCALE UP! Things can get cray when trying to scale up (look at many popular mobile apps, startups, and farms). Interestingly enough, you can even test for scale - but that's a different blog post. However, going from solving a portion of a Kakuro Puzzle to 14 full blown ones isn't too challenging!</p>
+            </section>
+
+            <footer class="post-footer">
+
+                <section class="author">
+                    <img class="author-image" src="/content/images/2014/11/shakil1.jpg">
+                    <h4>Shakil Thakur</h4>
+                    <p>Finding Magic Everywhere</p>
+                    <ul class="author-meta clearfix">
+                        
+                        
+                    </ul>
+                </section>
+
+                <section class="share">
+                    <h4>Share this post</h4>
+                    <a class="icon-twitter" href="https://twitter.com/share?text=Quickly%20Writing%20a%20Kakuro%20Solver&amp;url=http://shakilthakur.com/quickly-writing-a-kakuro-solver/"
+                        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                        <span class="hidden">Twitter</span>
+                    </a>
+                    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://shakilthakur.com/quickly-writing-a-kakuro-solver/"
+                        onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                        <span class="hidden">Facebook</span>
+                    </a>
+                    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://shakilthakur.com/quickly-writing-a-kakuro-solver/"
+                       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                        <span class="hidden">Google+</span>
+                    </a>
+                </section>
+
+            </footer>
+
+
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'shakblog'; // required: replace example with your forum shortname
+        var disqus_identifier = '23';
+     
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    </article>
+
+</main>
+
+
+    <footer class="site-footer">
+        <div class="inner">
+             <section class="copyright">&copy; 2014 Shakil Thakur</section>
+             <section class="poweredby">Proudly created with <a class="icon-ghost" href="https://ghost.org">Ghost</a></section>
+        </div>
+        <a class="subscribe icon-feed" href="/rss.xml"><span class="tooltip">Subscribe!</span></a>
+    </footer>
+
+
+</body>
+</html>

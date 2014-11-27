@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[TableSalt - SHAKBLOG]]></title><description><![CDATA[Life Abridged.]]></description><link>http://shakilthakur.com/</link><generator>Ghost 0.5</generator><lastBuildDate>Wed, 19 Nov 2014 02:13:14 GMT</lastBuildDate><atom:link href="http://shakilthakur.com/tag/tablesalt/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[TableSalt: final forward check features?]]></title><description><![CDATA[<p>The optimization games continue with TableSalt. <a href="http://shakilthakur.com/optimizing-code-layout-for-speed/">Last time</a> I managed to get down to a cool 222ms/puzzle, but of course I'm gonna keep trying for that 100ms! This time the optimizations came from the forward checking algorithm and some of the code used in determining which variable has the smallest domain.</p>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[TableSalt - SHAKBLOG]]></title><description><![CDATA[Life Abridged.]]></description><link>http://shakilthakur.com/</link><generator>Ghost 0.5</generator><lastBuildDate>Thu, 27 Nov 2014 03:45:20 GMT</lastBuildDate><atom:link href="http://shakilthakur.com/tag/tablesalt/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[TableSalt now available in luarocks!]]></title><description><![CDATA[<p>I MODULARIZED IT! WOOHOO! with no extra dependencies~! No need to <code>git submodule add</code> any longer! Just a regular old module install via luarocks:  </p>
+
+<pre><code class="lang-lua">luarocks install TableSalt  
+</code></pre>
+
+<p>and <code>require('TableSalt')</code> as you do and you're good to go! I still need to update the documentation, but no worries I'll get to it soon!</p>
+
+<h2 id="otherstuffs">Other stuffs</h2>
+
+<ul>
+<li>bug fixed when using non-square puzzles</li>
+<li>added a <code>TableSalt:getAllValues()</code> method that returns the current values of all the variables as a table.</li>
+</ul>
+
+<p>These came about while working on my <a href="http://shakilthakur.com/quickly-writing-a-kakuro-solver/">Kakuro Solver</a> where I also realized that returning some errors that are useful to the user might be a good idea as well. The most common issue I can see people running in to is not having a constraint associated with every variable in the CSP - as of now TableSalt will just return some generic lua error somewhere along the line... Also, I'll likely take a break from working on after I finish the docs and am not entirely sure when/if I'll pick it up again...</p>]]></description><link>http://shakilthakur.com/tablesalt-now-in-luarocks/</link><guid isPermaLink="false">e24738df-a9a4-4e82-91b9-2abb7aecc41c</guid><category><![CDATA[TableSalt]]></category><dc:creator><![CDATA[Shakil Thakur]]></dc:creator><pubDate>Thu, 27 Nov 2014 03:41:15 GMT</pubDate></item><item><title><![CDATA[TableSalt: final forward check features?]]></title><description><![CDATA[<p>The optimization games continue with TableSalt. <a href="http://shakilthakur.com/optimizing-code-layout-for-speed/">Last time</a> I managed to get down to a cool 222ms/puzzle, but of course I'm gonna keep trying for that 100ms! This time the optimizations came from the forward checking algorithm and some of the code used in determining which variable has the smallest domain.</p>
 
 <h2 id="background">Background</h2>
 

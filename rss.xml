@@ -1,5 +1,129 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[SHAKBLOG]]></title><description><![CDATA[Life Abridged.]]></description><link>http://shakilthakur.com/</link><generator>Ghost 0.5</generator><lastBuildDate>Wed, 19 Nov 2014 02:13:14 GMT</lastBuildDate><atom:link href="http://shakilthakur.com/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[TableSalt: final forward check features?]]></title><description><![CDATA[<p>The optimization games continue with TableSalt. <a href="http://shakilthakur.com/optimizing-code-layout-for-speed/">Last time</a> I managed to get down to a cool 222ms/puzzle, but of course I'm gonna keep trying for that 100ms! This time the optimizations came from the forward checking algorithm and some of the code used in determining which variable has the smallest domain.</p>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[SHAKBLOG]]></title><description><![CDATA[Life Abridged.]]></description><link>http://shakilthakur.com/</link><generator>Ghost 0.5</generator><lastBuildDate>Thu, 27 Nov 2014 03:45:20 GMT</lastBuildDate><atom:link href="http://shakilthakur.com/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[TableSalt now available in luarocks!]]></title><description><![CDATA[<p>I MODULARIZED IT! WOOHOO! with no extra dependencies~! No need to <code>git submodule add</code> any longer! Just a regular old module install via luarocks:  </p>
+
+<pre><code class="lang-lua">luarocks install TableSalt  
+</code></pre>
+
+<p>and <code>require('TableSalt')</code> as you do and you're good to go! I still need to update the documentation, but no worries I'll get to it soon!</p>
+
+<h2 id="otherstuffs">Other stuffs</h2>
+
+<ul>
+<li>bug fixed when using non-square puzzles</li>
+<li>added a <code>TableSalt:getAllValues()</code> method that returns the current values of all the variables as a table.</li>
+</ul>
+
+<p>These came about while working on my <a href="http://shakilthakur.com/quickly-writing-a-kakuro-solver/">Kakuro Solver</a> where I also realized that returning some errors that are useful to the user might be a good idea as well. The most common issue I can see people running in to is not having a constraint associated with every variable in the CSP - as of now TableSalt will just return some generic lua error somewhere along the line... Also, I'll likely take a break from working on after I finish the docs and am not entirely sure when/if I'll pick it up again...</p>]]></description><link>http://shakilthakur.com/tablesalt-now-in-luarocks/</link><guid isPermaLink="false">e24738df-a9a4-4e82-91b9-2abb7aecc41c</guid><category><![CDATA[TableSalt]]></category><dc:creator><![CDATA[Shakil Thakur]]></dc:creator><pubDate>Thu, 27 Nov 2014 03:41:15 GMT</pubDate></item><item><title><![CDATA[Quickly Writing a Kakuro Solver]]></title><description><![CDATA[<p>I finished my Kakuro Solver in a little over a <em>weekend</em>. I spent MONTHS working on my Sudoku Solver (and TableSalt...) and managed a complete overhaul of Kakuro in a few days. This was accomplished through good code design and practices! (not to mention using a pre-existing framework to do some heavy lifting!)</p>
+
+<p>I've gone over my process (more high level) and some of the things I learned in school and from friends that helped make it easy to do!</p>
+
+<h2 id="gettingstarted">Getting Started!</h2>
+
+<p>A few days back I <a href="http://shakilthakur.com/tablesalt-final-forward-check-features"><strong>finally</strong></a> finished TableSalt (or at least got it in a working state - there's still more to do) - and what was there to do with the it after it was done? Cook up something cool! My next step was <a href="http://en.wikipedia.org/wiki/Kakuro">Kakuro</a> - an interesting crossword-esque mathematical puzzle. It can be setup as a Constraint Problem, so it became the next big problem to solve. Kakuro added a "sum" component to my already existing <code>allDiff</code> constraint (found in TableSalt) and the <code>allDiffSum</code> constraint was born! The idea was taken from Helmut Simonis' wonderful paper on <a href="http://4c.ucc.ie/~hsimonis/kakuro%20modref08.pdf">Kakuro as a Constraint Problem</a>.</p>
+
+<h2 id="butialreadystartedthis">but I already started this...</h2>
+
+<p><a href="https://github.com/FourierTransformer/KakuroSolver/tree/dc4ddf2bf9b8dd0bf862cdc81cc3c3d06616a377">I did,</a> but it looks like I never fully committed after I started the parser...! And it didn't really work... I had taken a stab at this earlier when TableSalt was in it's infancy. I got the old code working with the [freshly modularized TableSalt] and realized it was a cluster. Fairly confusing code with few comments and no documentation (heck <code>allDiffSum.lua</code> still looks a little bleak, which I should get to like NOW). So, I spent very little time trying to fix it and quickly scrapped it and moved on.</p>
+
+<blockquote>
+  <p><strong>KILL IT WITH FIRE!</strong> <em>(shhh the analyzer was actually pretty legit)</em> <sub><sup>and don't be afraid to rewrite!</sup></sub></p>
+</blockquote>
+
+<h2 id="theparserwasgarbage">The Parser was garbage.</h2>
+
+<p>At some point, most programmers will have to write some form of a parser - for the simple reason that people need to provide input and we need some way to read in and then analyze what that the input means.</p>
+
+<p>My parser was garbage. No comments, crazy code, no idea how it worked (oh and it <strong>DIDN'T</strong> a lot of the time) and I'm pretty sure it passed on poorly parsed puzzles to the analyzer without a second thought.  </p>
+
+<blockquote>
+  <p>Error handling is like magic sauce for parsers. If you error out at the parser, there is a very clear "This is what I can and can't do" and you can prevent pain and suffering later on.</p>
+</blockquote>
+
+<p>So, I scrapped it. I recalled how it was supposed to work: read in the puzzle file line by line, split up the code via "segment" (the stuff between the pipes), figure out what's in the segment, and send it off to the correct table. The tables then went off for analysis! The design was good, the implementation was terrible - and BAM - a quick rewrite with comments and error handling was all it needed and we're good to go!</p>
+
+<h4 id="thekakuropuzzlefromwikipediaasatxtfile">The Kakuro Puzzle from WikiPedia as a txt file</h4>
+
+<pre><code class="lang-none"> 0\ 0|23\ 0|30\ 0| 0\ 0| 0\ 0|27\ 0|12\ 0|16\ 0
+ 0\16|  0  |  0  | 0\ 0|17\24|  0  |  0  |  0
+ 0\17|  0  |  0  |15\29|  0  |  0  |  0  |  0
+ 0\35|  0  |  0  |  0  |  0  |  0  |12\ 0| 0\ 0
+ 0\ 0| 0\ 7|  0  |  0  | 7\ 8|  0  |  0  | 7\ 0
+ 0\ 0|11\ 0|10\16|  0  |  0  |  0  |  0  |  0
+ 0\21|  0  |  0  |  0  |  0  | 0\ 5|  0  |  0
+ 0\ 6|  0  |  0  |  0  | 0\ 0| 0\ 3|  0  |  0
+</code></pre>
+
+<h2 id="theanalyzer">The Analyzer</h2>
+
+<p>Cool. CoolCoolCool. I have all the values in the tables! Now, I just need to trun them into constraints. My old code was fairly uncommented, but this worked well enough as the design around it hadn't changed. I brought back a couple of for loops, added a couple of comments, and it was done.</p>
+
+<blockquote>
+  <p>Reusing bits of code when the application is right can be a good idea.</p>
+</blockquote>
+
+<h2 id="solvingthingsfast">solving things fast</h2>
+
+<p>Kakuro is an interesting little game that one of my friends played a lot of back in high school. He always said it was much better than sudoku because it was a little more challenging and not as boring. Having to sum the values in the boxes as well as ensuring they are all different - a fairly simple concept to say the least.</p>
+
+<p>Solving a puzzle requires determining which combination of unique numbers can be used to sum to a number in a given length. Last time, I attempted to write my own Kakuro Combination finder. <em>That wasted a lot of time</em> (a couple of days/weeks would be my bet) and luckily the internet is a thing and I managed to find a javascript version on <a href="http://codegolf.stackexchange.com/questions/35562/kakuro-combinations">stackexchange</a> that was easy enough to follow and ported it over to Lua. A <strong>major</strong> time savings in my opinion as I'm not mathemagical enough to write such a thing.</p>
+
+<blockquote>
+  <p>Before you write some code, always poke around the interwebs, someone likely already wrote it!</p>
+</blockquote>
+
+<h2 id="weredoneright">We're done, right?!</h2>
+
+<p>Nope - but we're getting there! I just subbed in someone else's code and have no idea how it works - let alone if it works and then I'm throwing it into a mostly untested framework.</p>
+
+<blockquote>
+  <p>Always write Unit Tests First.</p>
+</blockquote>
+
+<p>and start small. Don't send in an entire Kakuro Puzzle and claim it's a test. You'll go mad debugging that. Try something simple like trying to sum to 5 with one number:  </p>
+
+<pre><code class="lang-lua">print(KakuroCombinator(5, 1))  
+</code></pre>
+
+<p>Good. Now make sure your constraint that's implementing your combination finder works as expected as well. (Don't worry it's only 4 lines of code)  </p>
+
+<pre><code class="lang-lua">kakuro = TableSalt:new({1, 2, 3, 4, 5, 6, 7, 8, 9},  1)  
+kakuro:addConstraintByIDs({1}, allDiffSum, 5)  
+kakuro:solve()  
+kakuro:print()  
+</code></pre>
+
+<p>From here we move on to do some more things like adding values in two segments, dealing with combinations vs permutations, and slowly working our way up to a full puzzle.</p>
+
+<p>I should've also written tests for the parser and the analyzer but I didn't. It was a choice I made and there are couple of reasons for it: </p>
+
+<ul>
+<li>The parser and analyzer aren't too complex - it's not like the code is being sent into this vortex of insanity. It's just a couple <code>if</code>'s and <code>for</code>'s.</li>
+<li>They likely wont be used outside my 14 testing puzzles whereas the <code>allDiffSum</code> constraint could be used in many other situations (MOAR PUZZLE PROBLEMS!)</li>
+</ul>
+
+<p>Some people would argue this is bad coding practice - and they're not wrong. Perhaps if I have some time - I'll go back in and write some tests for it - but for now <em>I'm good</em>.</p>
+
+<h2 id="sowheresthatfancyunittestinglibrary">So, where's that fancy unit testing library?</h2>
+
+<p>For a long time I associated Unit tests with some sort of unit-testing library, possibly because I originally exposed to it via junit with Java early on. And while it's <strong>highly</strong> recommended and <em>incredibly</em> useful to have a unit testing library a non-self-verifying <code>print()</code> statement should suffice at the beginning and turning it into a full on proper unit test isn't all too hard (in most languages):</p>
+
+<pre><code class="lang-lua">it("should all equal 5", function()  
+    kakuro = TableSalt:new({1, 2, 3, 4, 5, 6, 7, 8, 9},  1)
+    kakuro:addConstraintByIDs({1}, allDiffSum, 5)
+    kakuro:solve()
+    assert.tcompare(kakuro:getAllValues(), {5})
+end)  
+</code></pre>
+
+<p>This is part of a development process known as Test Driven Development. TDD SAVES SO MUCH TIME. It can also help alleviate concerns when refactoring - can't be stressed enough and is one of the most important things college taught me that changed the how I think about  <em>and write</em> code.</p>
+
+<blockquote>
+  <p>One of the paradigms of Test Driven Development (TDD) is that the expected input/output of a function is known and the code design is planned out before the code is written.</p>
+</blockquote>
+
+<h2 id="sweet">SWEET!</h2>
+
+<p>The tests are working and the code is complete. It's time to SCALE UP! Things can get cray when trying to scale up (look at many popular mobile apps, startups, and farms). Interestingly enough, you can even test for scale - but that's a different blog post. However, going from solving a portion of a Kakuro Puzzle to 14 full blown ones isn't too challenging!</p>]]></description><link>http://shakilthakur.com/quickly-writing-a-kakuro-solver/</link><guid isPermaLink="false">bd673a9d-bd4a-4044-bb1d-ef7c697d630d</guid><dc:creator><![CDATA[Shakil Thakur]]></dc:creator><pubDate>Thu, 27 Nov 2014 03:26:20 GMT</pubDate></item><item><title><![CDATA[TableSalt: final forward check features?]]></title><description><![CDATA[<p>The optimization games continue with TableSalt. <a href="http://shakilthakur.com/optimizing-code-layout-for-speed/">Last time</a> I managed to get down to a cool 222ms/puzzle, but of course I'm gonna keep trying for that 100ms! This time the optimizations came from the forward checking algorithm and some of the code used in determining which variable has the smallest domain.</p>
 
 <h2 id="background">Background</h2>
 
