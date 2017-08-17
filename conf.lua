@@ -1,8 +1,8 @@
 local conf = {
-    location = "/Users/shakil/Source/ghost-blog/",
+    location = "/Users/shakil/Source/ghost-blog-new/",
     server = "http://localhost:2368/",
-    version = 14,
-    cname = "shakilthakur.com"
+    version = 8,
+    cname = ""
 }
 return conf
 

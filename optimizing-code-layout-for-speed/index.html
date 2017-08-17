@@ -5,60 +5,84 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
     <title>TableSalt: optimizing code layout for speed in lua | SHAKBLOG</title>
-    <meta name="description" content="" />
 
     <meta name="HandheldFriendly" content="True" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <link rel="shortcut icon" href="/favicon.ico">
 
-    <link href='http://fonts.googleapis.com/css?family=Dosis:400|Lato:100,100italic,300|Open+Sans|Source+Code+Pro' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="/assets/css/main.css?v=a6a1b73aeb" />
-    <!-- <link rel="stylesheet" type="text/css" href="/assets/css/monokai.css?v=a6a1b73aeb" /> -->
+    <link href='https://fonts.googleapis.com/css?family=Lato:100,100i,300|Open+Sans' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css?v=98663eff67" />
+    <!-- <link rel="stylesheet" type="text/css" href="/assets/css/monokai.css?v=98663eff67" /> -->
     <link rel="icon" type="image/ico" href="/favicon.ico" />
 
-    <script defer src="/assets/js/rainbow.min.js?v=a6a1b73aeb"></script>
-    <script defer src="/assets/js/lua.js?v=a6a1b73aeb"></script>
+    <script defer src="/assets/js/rainbow.min.js?v=98663eff67"></script>
+    <script defer src="/assets/js/lua.js?v=98663eff67"></script>
 
-    <link rel="canonical" href="http://shakilthakur.com/optimizing-code-layout-for-speed/" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="canonical" href="http://localhost:2368/optimizing-code-layout-for-speed/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
     
     <meta property="og:site_name" content="SHAKBLOG" />
     <meta property="og:type" content="article" />
     <meta property="og:title" content="TableSalt: optimizing code layout for speed in lua" />
-    <meta property="og:description" content="A while back I wrote TableSalt - a constraint satisfaction framework written in [currently pure] lua. Every now and again I'll revisit it and try to make it run faster and get rid of any bugs found along the way..." />
-    <meta property="og:url" content="http://shakilthakur.com/optimizing-code-layout-for-speed/" />
-    <meta property="article:published_time" content="2014-11-17T00:36:59.107Z" />
-    <meta property="article:modified_time" content="2014-11-17T02:42:46.285Z" />
+    <meta property="og:description" content="A while back I wrote TableSalt - a constraint satisfaction framework written in [currently pure] lua. Every now and again I&#x27;ll revisit it and try to make it run faster and get rid of any bugs found along the way. For benchmarking I use my SudokuSolver on a test of" />
+    <meta property="og:url" content="http://localhost:2368/optimizing-code-layout-for-speed/" />
+    <meta property="article:published_time" content="2014-11-17T00:36:59.000Z" />
+    <meta property="article:modified_time" content="2014-11-17T02:42:46.000Z" />
     <meta property="article:tag" content="TableSalt" />
     
-    <meta name="twitter:card" content="content" />
+    <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="TableSalt: optimizing code layout for speed in lua" />
-    <meta name="twitter:description" content="A while back I wrote TableSalt - a constraint satisfaction framework written in [currently pure] lua. Every now and again I'll revisit it and try to make it run faster and get rid of any bugs found along the way..." />
-    <meta name="twitter:url" content="http://shakilthakur.com/optimizing-code-layout-for-speed/" />
+    <meta name="twitter:description" content="A while back I wrote TableSalt - a constraint satisfaction framework written in [currently pure] lua. Every now and again I&#x27;ll revisit it and try to make it run faster and get rid of any bugs found along the way. For benchmarking I use my SudokuSolver on a test of" />
+    <meta name="twitter:url" content="http://localhost:2368/optimizing-code-layout-for-speed/" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Shakil Thakur" />
+    <meta name="twitter:label2" content="Filed under" />
+    <meta name="twitter:data2" content="TableSalt" />
     
     <script type="application/ld+json">
 {
-    "@context": "http://schema.org",
+    "@context": "https://schema.org",
     "@type": "Article",
-    "publisher": "SHAKBLOG",
+    "publisher": {
+        "@type": "Organization",
+        "name": "SHAKBLOG",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "http://localhost:2368/favicon.ico",
+            "width": 60,
+            "height": 60
+        }
+    },
     "author": {
         "@type": "Person",
         "name": "Shakil Thakur",
-        "image": "http://shakilthakur.com/content/images/2014/11/shakil1.jpg",
-        "url": "http://shakilthakur.com/author/shakil",
-        "sameAs": null
+        "url": "http://localhost:2368/author/shakil/",
+        "sameAs": []
     },
     "headline": "TableSalt: optimizing code layout for speed in lua",
-    "url": "http://shakilthakur.com/optimizing-code-layout-for-speed/",
-    "datePublished": "2014-11-17T00:36:59.107Z",
-    "dateModified": "2014-11-17T02:42:46.285Z",
+    "url": "http://localhost:2368/optimizing-code-layout-for-speed/",
+    "datePublished": "2014-11-17T00:36:59.000Z",
+    "dateModified": "2014-11-17T02:42:46.000Z",
     "keywords": "TableSalt",
-    "description": "A while back I wrote TableSalt - a constraint satisfaction framework written in [currently pure] lua. Every now and again I'll revisit it and try to make it run faster and get rid of any bugs found along the way"
+    "description": "A while back I wrote TableSalt - a constraint satisfaction framework written in [currently pure] lua. Every now and again I&#x27;ll revisit it and try to make it run faster and get rid of any bugs found along the way. For benchmarking I use my SudokuSolver on a test of",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "http://localhost:2368/"
+    }
 }
     </script>
 
-    <meta name="generator" content="Ghost 0.5" />
-    <link rel="alternate" type="application/rss+xml" title="SHAKBLOG" href="/rss/" />
+    <script type="text/javascript" src="/public/ghost-sdk.js?v=98663eff67"></script>
+<script type="text/javascript">
+ghost.init({
+	clientId: "ghost-frontend",
+	clientSecret: "02974e9c4a31"
+});
+</script>
+    <meta name="generator" content="Ghost 1.6" />
+    <link rel="alternate" type="application/rss+xml" title="SHAKBLOG" href="http://localhost:2368/rss/" />
 
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -80,7 +104,7 @@
     <div class="vertical">
         <div class="site-head-content inner">
             
-            <h1 class="blog-title"><a href="http://shakilthakur.com">SHAKBLOG</a></h1>
+            <h1 class="blog-title"><a href="http://localhost:2368">SHAKBLOG</a></h1>
             <h2 class="blog-description">Life Abridged.</h2>
             <!-- <h2 class="blog-subtext">I am not a web developer.</h2> -->
             <nav class="blog-nav">
@@ -106,38 +130,27 @@
             <h1 class="post-title">TableSalt: optimizing code layout for speed in lua</h1>
 
             <section class="post-content">
-                <p>A while back I wrote <a href="http://github.com/fouriertransformer/TableSalt">TableSalt</a> - a constraint satisfaction framework written in [currently pure] lua. Every now and again I'll revisit it and try to make it run faster and get rid of any bugs found along the way. For benchmarking I use my SudokuSolver on a test of <a href="http://norvig.com/top95.txt">95 sudoku puzzles</a>.</p>
-
+                <div class="kg-card-markdown"><p>A while back I wrote <a href="http://github.com/fouriertransformer/TableSalt">TableSalt</a> - a constraint satisfaction framework written in [currently pure] lua. Every now and again I'll revisit it and try to make it run faster and get rid of any bugs found along the way. For benchmarking I use my SudokuSolver on a test of <a href="http://norvig.com/top95.txt">95 sudoku puzzles</a>.</p>
 <p>My goal is a 100ms average. Back in May 2014 I was chilling at 337ms. Before these layout changes, I was at 253ms. Now I'm at 222ms and am only inching ever closer!</p>
-
 <h2 id="originalcodelayout">Original Code Layout</h2>
-
-<p>Initially I had a <code>cell</code> object, this is best thought of as an empty "cell" in sudoku or a variable in <a href="http://en.wikipedia.org/wiki/Constraint_satisfaction_problem">constraint satisfaction problems</a>. Each cell has a domain, value, and a reference to each of the constraints it is associated with.</p>
-
-<p>As such the code was pretty straigtforward:  </p>
-
-<pre><code class="lang-lua">function cell:initialize(domain)  
+<p>Initially I had a <code>cell</code> object, this is best thought of as an empty &quot;cell&quot; in sudoku or a variable in <a href="http://en.wikipedia.org/wiki/Constraint_satisfaction_problem">constraint satisfaction problems</a>. Each cell has a domain, value, and a reference to each of the constraints it is associated with.</p>
+<p>As such the code was pretty straigtforward:</p>
+<pre><code class="language-lang-lua">function cell:initialize(domain)
      self.domain = domain
      self.value = nil
      self.constraints = {}
  end
 </code></pre>
-
-<p>I needed a table of cells to keep track of all the cells:  </p>
-
-<pre><code class="lang-lua">self.cells = {}  
-for i = 1, self.size do  
+<p>I needed a table of cells to keep track of all the cells:</p>
+<pre><code class="language-lang-lua">self.cells = {}
+for i = 1, self.size do
     self.cells[i] = cell:new({unpack(domain)})
-end  
+end
 </code></pre>
-
 <p>The <code>{unpack()}</code> created a deepcopy for each <code>cell</code>'s domain. <code>unpack</code> is a built-in lua function that explodes a table, the curly brackets around it create a new version and a deep copy is born!</p>
-
 <h2 id="thebackup">The Backup</h2>
-
-<p>While writing TableSalt, I wrote a ForwardCheck (or <a href="http://en.wikipedia.org/wiki/Look-ahead_(backtracking)">look-ahead</a>) function that needed to backup and restore the current state of the cells. Easy enough:  </p>
-
-<pre><code class="lang-lua">function TableSalt:backupCells()  
+<p>While writing TableSalt, I wrote a ForwardCheck (or <a href="http://en.wikipedia.org/wiki/Look-ahead_(backtracking)">look-ahead</a>) function that needed to backup and restore the current state of the cells. Easy enough:</p>
+<pre><code class="language-lang-lua">function TableSalt:backupCells()
     local serial = {{}, {}}
     for i = 1, self.size do
         serial[1][i] = {unpack(self.cells[i].domain)}
@@ -146,36 +159,28 @@ end
     return serial
 end
 
-function TableSalt:restoreCells(serial)  
+function TableSalt:restoreCells(serial)
     for i=1, self.size do
         self.cells[i].domain = serial[1][i]
         self.cells[i].value = serial[2][i]
     end
-end  
+end
 </code></pre>
-
 <h2 id="theproblem">The Problem.</h2>
-
 <p>This was slow. When I ran the code against a profiler, the code backup and <code>AllDiff</code> constraint were usually the prime culprits of wasting time. On my [unrealistic?] goal towards 100ms, wasting time on backups and restores was not an option. I read up on <a href="http://www.lua.org/gems/sample.pdf">optimizing lua code</a> and posted on <a href="http://stackoverflow.com/questions/26453830/optimizing-a-lua-table-backup">stackoverflow</a> looking for help.</p>
-
 <h2 id="speedingitallup">SPEEDING IT ALL UP!</h2>
-
-<p>I got rid of the cell class. Arguably, it's bad code design, but I did it in the name of speed. Here's what the initializer code became:  </p>
-
-<pre><code class="lang-lua">self.cellValue = {}  
-self.cellDomain = {}  
-self.cellConstraint = {}  
-for i = 1, self.size do  
-    self.cellConstraint[i] = {}
-    self.cellDomain[i] = {unpack(domain)}
-end  
+<p>I got rid of the cell class. Arguably, it's bad code design, but I did it in the name of speed. Here's what the initializer code became:</p>
+<pre><code class="language-lang-lua">self.cellValue = {}
+self.cellDomain = {}
+self.cellConstraint = {}
+for i = 1, self.size do
+	self.cellConstraint[i] = {}
+	self.cellDomain[i] = {unpack(domain)}
+end
 </code></pre>
-
 <p>and as some of you lua aficionados might notice - I could've used a <code>self.cells = {}</code> and made each of those tables into <code>self.cells.value</code>, <code>self.cells.domain</code>, and <code>self.cells.constrains</code>, but I would gain ~4ms if I did so. If I ever get sub-100ms, I may consider adding it back in for the sake of better code design.</p>
-
-<p>Anyway, this allowed me to do was create clones quickly and avoid the need to "restore" the values to their initial state. Now the backup function (which looks VERY similar to before) is:  </p>
-
-<pre><code class="lang-lua">local function backupCells(cellDomain, cellValue)  
+<p>Anyway, this allowed me to do was create clones quickly and avoid the need to &quot;restore&quot; the values to their initial state. Now the backup function (which looks VERY similar to before) is:</p>
+<pre><code class="language-lang-lua">local function backupCells(cellDomain, cellValue)
     local cellDomain, cellValue = cellDomain, cellValue
     local serial = {{}, {}}
     for i = 1, #cellDomain do
@@ -183,28 +188,24 @@ end
         serial[2][i] = cellValue[i]
     end
     return serial
-end  
+end
 </code></pre>
-
-<p>and restore has become a quick two-liner:  </p>
-
-<pre><code class="lang-lua">self.cellDomain = cellCopy[1]  
-self.cellValue = cellCopy[2]  
+<p>and restore has become a quick two-liner:</p>
+<pre><code class="language-lang-lua">self.cellDomain = cellCopy[1]
+self.cellValue = cellCopy[2]
 </code></pre>
-
 <p>This provided a <em>fairly</em> significant speedup! On the sudoku benchmark, I now average ~222ms/puzzle - a whopping <strong>31ms</strong> speedup from the 253ms before it.</p>
-
 <h2 id="thefuture">The Future</h2>
-
 <p>I'm starting to think I'm reaching the end of pure-lua optimizations. I want to convert the cell backup and parts of the <code>AllDiff</code> function to C and see if that offers any significant speedup. If anyone has any other suggestions for speed (the code can be found on <a href="https://github.com/FourierTransformer/TableSalt">GitHub</a>) - please let me know I'd love to hear it!</p>
+</div>
             </section>
 
             <footer class="post-footer">
 
                 <section class="author">
-                    <img class="author-image" src=/assets/images/author-85.jpg?v=a6a1b73aeb srcset="/assets/images/author-170.jpg?v=a6a1b73aeb 2x, /content/images/2014/11/shakil1.jpg 3.5x">
+                    <img class="author-image" src=/assets/images/author-85.jpg?v=98663eff67 srcset="/assets/images/author-170.jpg?v=98663eff67 2x,  3.5x">
                     <h4>Shakil Thakur</h4>
-                    <p>Finding Magic Everywhere</p>
+                    <p></p>
                     <ul class="author-meta clearfix">
                         
                         
@@ -213,15 +214,15 @@ self.cellValue = cellCopy[2]
 
                 <section class="share">
                     <h4>Share this post</h4>
-                    <a class="icon-twitter" href="https://twitter.com/share?text=TableSalt%3A%20optimizing%20code%20layout%20for%20speed%20in%20lua&amp;url=http://shakilthakur.com/optimizing-code-layout-for-speed/"
+                    <a class="icon-twitter" href="https://twitter.com/share?text=TableSalt%3A%20optimizing%20code%20layout%20for%20speed%20in%20lua&amp;url=http://localhost:2368/optimizing-code-layout-for-speed/"
                         onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
                         <span class="hidden">Twitter</span>
                     </a>
-                    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://shakilthakur.com/optimizing-code-layout-for-speed/"
+                    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:2368/optimizing-code-layout-for-speed/"
                         onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
                         <span class="hidden">Facebook</span>
                     </a>
-                    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://shakilthakur.com/optimizing-code-layout-for-speed/"
+                    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://localhost:2368/optimizing-code-layout-for-speed/"
                        onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
                         <span class="hidden">Google+</span>
                     </a>
@@ -233,7 +234,7 @@ self.cellValue = cellCopy[2]
     <div id="disqus_thread"></div>
     <script type="text/javascript">
         var disqus_shortname = 'shakblog'; // required: replace example with your forum shortname
-        var disqus_identifier = '21';
+        var disqus_identifier = '5994f8815a1d7e048e72fc80';
      
         /* * * DON'T EDIT BELOW THIS LINE * * */
         (function() {
@@ -252,12 +253,13 @@ self.cellValue = cellCopy[2]
 
     <footer class="site-footer">
         <div class="inner">
-             <section class="copyright">&copy; 2014 Shakil Thakur</section>
+             <section class="copyright">&copy; 2017 Shakil Thakur</section>
              <section class="poweredby">Proudly created with <a class="icon-ghost" href="https://ghost.org">Ghost</a></section>
         </div>
         <a class="subscribe icon-feed" href="/rss.xml"><span class="tooltip">Subscribe!</span></a>
     </footer>
 
+    
 
 </body>
 </html>
