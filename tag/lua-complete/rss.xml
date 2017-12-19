@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0" xmlns:media="http://search.yahoo.com/mrss/"><channel><title><![CDATA[lua-complete - SHAKBLOG]]></title><description><![CDATA[Life Abridged.]]></description><link>http://shakilthakur.com/</link><generator>Ghost 0.11</generator><lastBuildDate>Tue, 19 Dec 2017 03:34:52 GMT</lastBuildDate><atom:link href="http://shakilthakur.com/tag/lua-complete/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[a luacov-coveralls caveat]]></title><description><![CDATA[<p>I've done some continuous integration with travis-ci on my Lua libraries throughout the years. I've been following <a href="http://kiki.to/blog/2016/02/04/talk-continuous-integration-with-lua/">kikito's template</a> to great success.</p>
+
+<p>However, when I was setting it up for <a href="https://github.com/FourierTransformer/lua-complete">lua-complete</a> I ran into an odd issue with luacov not excluding files correctly, that took a little bit to fix.</p>]]></description><link>http://shakilthakur.com/lua-cov-coveralls-caveat/</link><guid isPermaLink="false">0b4b2709-c6b9-4561-9b2a-637483d9e02b</guid><category><![CDATA[lua-complete]]></category><dc:creator><![CDATA[Shakil Thakur]]></dc:creator><pubDate>Sun, 17 Dec 2017 18:48:29 GMT</pubDate><media:content url="http://shakilthakur.com/content/images/2017/12/Screen-Shot-2017-12-17-at-12.47.25-PM.png" medium="image"/><content:encoded><![CDATA[<img src="http://shakilthakur.com/content/images/2017/12/Screen-Shot-2017-12-17-at-12.47.25-PM.png" alt="a luacov-coveralls caveat"><p>I've done some continuous integration with travis-ci on my Lua libraries throughout the years. I've been following <a href="http://kiki.to/blog/2016/02/04/talk-continuous-integration-with-lua/">kikito's template</a> to great success.</p>
+
+<p>However, when I was setting it up for <a href="https://github.com/FourierTransformer/lua-complete">lua-complete</a> I ran into an odd issue with luacov not excluding files correctly, that took a little bit to fix...</p>
+
+<p><img src="http://shakilthakur.com/content/images/2017/12/Screen-Shot-2017-12-17-at-12.47.25-PM-1.png" alt="a luacov-coveralls caveat">
+<em>Note: I also should've used a squash commit, but oh well..</em></p>
+
+<p>It was the exclude flag in the last part of the travis build:  </p>
+
+<pre><code>after_success:  
+  - luacov-coveralls -e $TRAVIS_BUILD_DIR/lua_install
+</code></pre>
+
+<p>The exclude flag doesn't just exclude certain directories, but rather certain <em>patterns</em>. lua-complete had a dash in the name, and luacov uses a <code>string.match</code> pattern in Lua to handle excludes. I had to go through some code to find it, but that ended up being the issue.</p>
+
+<p>The fix was to just use <code>sed</code> to escape the dashes:  </p>
+
+<pre><code>after_success:  
+- EXCLUDE_DIR=`echo $TRAVIS_BUILD_DIR/lua_install | sed 's/-/%-/'`
+- luacov-coveralls -e $EXCLUDE_DIR
+</code></pre>
+
+<p>I hope this helps anyone else who has issues using luacov-coveralls with projects that have dashes in the name!</p>]]></content:encoded></item></channel></rss>

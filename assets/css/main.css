@@ -433,7 +433,7 @@ nav ul li a {
 
 
 .blog-title {
-    font-family: 'Lato', sans-serif;
+    font-family: 'SHAKBLOG', sans-serif;
     font-size: 4em;
     letter-spacing: -.05em;
     font-weight: 100;
@@ -1359,3 +1359,10 @@ img.github {
     width: 48px;
     margin-top: -.375em;
 }
+
+@font-face {
+  font-family: 'SHAKBLOG';
+  src: url('../fonts/SHAKBLOG.woff2') format('woff2'),
+       url('../fonts/SHAKBLOG.woff') format('woff');
+}
+

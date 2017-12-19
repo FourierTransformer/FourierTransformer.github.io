@@ -1,100 +1,169 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0" xmlns:media="http://search.yahoo.com/mrss/"><channel><title><![CDATA[Shakil Thakur - SHAKBLOG]]></title><description><![CDATA[Life Abridged.]]></description><link>http://localhost:2368/</link><image><url>http://localhost:2368/favicon.png</url><title>Shakil Thakur - SHAKBLOG</title><link>http://localhost:2368/</link></image><generator>Ghost 1.6</generator><lastBuildDate>Thu, 17 Aug 2017 03:51:28 GMT</lastBuildDate><atom:link href="http://localhost:2368/author/shakil/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[TableSalt now available in luarocks!]]></title><description><![CDATA[<div class="kg-card-markdown"><p>I published it with no extra dependencies! No need to <code>git submodule add</code> any longer! Just a regular old module install via luarocks:</p>
-<pre><code class="language-lang-lua">luarocks install TableSalt
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0" xmlns:media="http://search.yahoo.com/mrss/"><channel><title><![CDATA[Shakil Thakur - SHAKBLOG]]></title><description><![CDATA[Life Abridged.]]></description><link>http://shakilthakur.com/</link><generator>Ghost 0.11</generator><lastBuildDate>Tue, 19 Dec 2017 03:34:51 GMT</lastBuildDate><atom:link href="http://shakilthakur.com/author/shakil/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[a luacov-coveralls caveat]]></title><description><![CDATA[<p>I've done some continuous integration with travis-ci on my Lua libraries throughout the years. I've been following <a href="http://kiki.to/blog/2016/02/04/talk-continuous-integration-with-lua/">kikito's template</a> to great success.</p>
+
+<p>However, when I was setting it up for <a href="https://github.com/FourierTransformer/lua-complete">lua-complete</a> I ran into an odd issue with luacov not excluding files correctly, that took a little bit to fix.</p>]]></description><link>http://shakilthakur.com/lua-cov-coveralls-caveat/</link><guid isPermaLink="false">0b4b2709-c6b9-4561-9b2a-637483d9e02b</guid><category><![CDATA[lua-complete]]></category><dc:creator><![CDATA[Shakil Thakur]]></dc:creator><pubDate>Sun, 17 Dec 2017 18:48:29 GMT</pubDate><media:content url="http://shakilthakur.com/content/images/2017/12/Screen-Shot-2017-12-17-at-12.47.25-PM.png" medium="image"/><content:encoded><![CDATA[<img src="http://shakilthakur.com/content/images/2017/12/Screen-Shot-2017-12-17-at-12.47.25-PM.png" alt="a luacov-coveralls caveat"><p>I've done some continuous integration with travis-ci on my Lua libraries throughout the years. I've been following <a href="http://kiki.to/blog/2016/02/04/talk-continuous-integration-with-lua/">kikito's template</a> to great success.</p>
+
+<p>However, when I was setting it up for <a href="https://github.com/FourierTransformer/lua-complete">lua-complete</a> I ran into an odd issue with luacov not excluding files correctly, that took a little bit to fix...</p>
+
+<p><img src="http://shakilthakur.com/content/images/2017/12/Screen-Shot-2017-12-17-at-12.47.25-PM-1.png" alt="a luacov-coveralls caveat">
+<em>Note: I also should've used a squash commit, but oh well..</em></p>
+
+<p>It was the exclude flag in the last part of the travis build:  </p>
+
+<pre><code>after_success:  
+  - luacov-coveralls -e $TRAVIS_BUILD_DIR/lua_install
 </code></pre>
-<p>and <code>require('TableSalt')</code> as you do and you're good to go! I still need to update the documentation, but no worries I'll get to</p></div>]]></description><link>http://localhost:2368/tablesalt-now-in-luarocks/</link><guid isPermaLink="false">5994f8815a1d7e048e72fc83</guid><category><![CDATA[TableSalt]]></category><dc:creator><![CDATA[Shakil Thakur]]></dc:creator><pubDate>Thu, 27 Nov 2014 03:41:15 GMT</pubDate><content:encoded><![CDATA[<div class="kg-card-markdown"><p>I published it with no extra dependencies! No need to <code>git submodule add</code> any longer! Just a regular old module install via luarocks:</p>
-<pre><code class="language-lang-lua">luarocks install TableSalt
+
+<p>The exclude flag doesn't just exclude certain directories, but rather certain <em>patterns</em>. lua-complete had a dash in the name, and luacov uses a <code>string.match</code> pattern in Lua to handle excludes. I had to go through some code to find it, but that ended up being the issue.</p>
+
+<p>The fix was to just use <code>sed</code> to escape the dashes:  </p>
+
+<pre><code>after_success:  
+- EXCLUDE_DIR=`echo $TRAVIS_BUILD_DIR/lua_install | sed 's/-/%-/'`
+- luacov-coveralls -e $EXCLUDE_DIR
 </code></pre>
+
+<p>I hope this helps anyone else who has issues using luacov-coveralls with projects that have dashes in the name!</p>]]></content:encoded></item><item><title><![CDATA[Restarting the blog]]></title><description><![CDATA[<p>It's been a while. I plan on blogging about some of my adventures from here on out. Let's see how it goes!</p>]]></description><link>http://shakilthakur.com/restarting-the-blog/</link><guid isPermaLink="false">566a1ae8-4954-4661-91b3-66e064cffcf2</guid><dc:creator><![CDATA[Shakil Thakur]]></dc:creator><pubDate>Thu, 14 Dec 2017 04:52:01 GMT</pubDate><content:encoded><![CDATA[<p>It's been a while. I plan on blogging about some of my adventures from here on out. Let's see how it goes!</p>]]></content:encoded></item><item><title><![CDATA[TableSalt now available in luarocks!]]></title><description><![CDATA[<p>I published it with no extra dependencies! No need to <code>git submodule add</code> any longer! Just a regular old module install via luarocks:  </p>
+
+<pre><code class="language-lang-lua">luarocks install TableSalt  
+</code></pre>
+
+<p>and <code>require('TableSalt')</code> as you do and you're good to go! I still need to update the documentation, but no worries I'll get to</p>]]></description><link>http://shakilthakur.com/tablesalt-now-in-luarocks/</link><guid isPermaLink="false">e24738df-a9a4-4e82-91b9-2abb7aecc41c</guid><category><![CDATA[TableSalt]]></category><dc:creator><![CDATA[Shakil Thakur]]></dc:creator><pubDate>Thu, 27 Nov 2014 03:41:15 GMT</pubDate><content:encoded><![CDATA[<p>I published it with no extra dependencies! No need to <code>git submodule add</code> any longer! Just a regular old module install via luarocks:  </p>
+
+<pre><code class="language-lang-lua">luarocks install TableSalt  
+</code></pre>
+
 <p>and <code>require('TableSalt')</code> as you do and you're good to go! I still need to update the documentation, but no worries I'll get to it soon!</p>
+
 <h2 id="otherstuffs">Other stuffs</h2>
+
 <ul>
 <li>bug fixed when using non-square puzzles</li>
 <li>added a <code>TableSalt:getAllValues()</code> method that returns the current values of all the variables as a table.</li>
 </ul>
-<p>These came about while working on my <a href="https://github.com/FourierTransformer/KakuroSolver">Kakuro Solver</a> where I also realized that returning some errors that are useful to the user might be a good idea as well. The most common issue is not having a constraint associated with every variable in the CSP - as of now TableSalt will just return some generic lua error somewhere along the line... Also, I'll likely take a break from working on TableSalt after I finish the docs and am not entirely sure when/if I'll pick it up again...</p>
-</div>]]></content:encoded></item><item><title><![CDATA[TableSalt: final forward check features?]]></title><description><![CDATA[<div class="kg-card-markdown"><p>The optimization games continue with TableSalt. <a href="http://localhost:2368/optimizing-code-layout-for-speed/">Last time</a> I managed to get down to a cool 222ms/puzzle, but of course I'm gonna keep trying for that 100ms! This time the optimizations came from the forward checking algorithm and some of the code used in determining which variable has the</p></div>]]></description><link>http://localhost:2368/tablesalt-final-forward-check-features/</link><guid isPermaLink="false">5994f8815a1d7e048e72fc81</guid><category><![CDATA[TableSalt]]></category><dc:creator><![CDATA[Shakil Thakur]]></dc:creator><pubDate>Tue, 18 Nov 2014 23:45:50 GMT</pubDate><content:encoded><![CDATA[<div class="kg-card-markdown"><p>The optimization games continue with TableSalt. <a href="http://localhost:2368/optimizing-code-layout-for-speed/">Last time</a> I managed to get down to a cool 222ms/puzzle, but of course I'm gonna keep trying for that 100ms! This time the optimizations came from the forward checking algorithm and some of the code used in determining which variable has the smallest domain.</p>
+
+<p>These came about while working on my <a href="https://github.com/FourierTransformer/KakuroSolver">Kakuro Solver</a> where I also realized that returning some errors that are useful to the user might be a good idea as well. The most common issue is not having a constraint associated with every variable in the CSP - as of now TableSalt will just return some generic lua error somewhere along the line... Also, I'll likely take a break from working on TableSalt after I finish the docs and am not entirely sure when/if I'll pick it up again...</p>]]></content:encoded></item><item><title><![CDATA[TableSalt: final forward check features?]]></title><description><![CDATA[<p>The optimization games continue with TableSalt. <a href="http://shakilthakur.com/optimizing-code-layout-for-speed/">Last time</a> I managed to get down to a cool 222ms/puzzle, but of course I'm gonna keep trying for that 100ms! This time the optimizations came from the forward checking algorithm and some of the code used in determining which variable has the</p>]]></description><link>http://shakilthakur.com/tablesalt-final-forward-check-features/</link><guid isPermaLink="false">e069fc1c-3b41-4ae5-a9ee-07dddb1b4104</guid><category><![CDATA[TableSalt]]></category><dc:creator><![CDATA[Shakil Thakur]]></dc:creator><pubDate>Tue, 18 Nov 2014 23:45:50 GMT</pubDate><content:encoded><![CDATA[<p>The optimization games continue with TableSalt. <a href="http://shakilthakur.com/optimizing-code-layout-for-speed/">Last time</a> I managed to get down to a cool 222ms/puzzle, but of course I'm gonna keep trying for that 100ms! This time the optimizations came from the forward checking algorithm and some of the code used in determining which variable has the smallest domain.</p>
+
 <h2 id="background">Background</h2>
+
 <p>TableSalt uses forward checking during backtracking using a minium remaining value (MRV) heuristic - this means it runs through all unassigned variables and finds the one with the smallest domain.</p>
-<p>Finding MRV for Cell 05:</p>
-<pre><code class="language-lang-none">4 1 ? | 3 ? ? | 8 ? 5        01 02 03 | 04 05 06 | 07 08 09
+
+<p>Finding MRV for Cell 05:  </p>
+
+<pre><code class="language-lang-none">4 1 ? | 3 ? ? | 8 ? 5        01 02 03 | 04 05 06 | 07 08 09  
 ? 3 ? | 1 ? ? | ? ? ?        10 11 12 | 13 14 15 | 16 17 18
 ? 5 ? | 7 ? ? | ? ? ?        19 20 21 | 22 23 24 | 25 26 27
 ------+-------+------        ---------+----------+---------
-8 2 5 | 4 3 7 | 1 6 9        28 29 30 | 31 32 33 | 34 35 36
+8 2 5 | 4 3 7 | 1 6 9        28 29 30 | 31 32 33 | 34 35 36  
 ? 9 ? | 5 8 ? | 4 ? ?        37 38 39 | 40 41 42 | 43 44 45
 ? 4 ? | 9 1 ? | ? ? ?        46 47 48 | 49 50 51 | 52 53 54
 ------+-------+------        ---------+----------+---------
-2 8 9 | 6 4 3 | 5 7 1        55 56 57 | 58 59 60 | 61 62 63
-5 7 3 | 2 9 1 | 6 ? ?        64 65 66 | 67 68 69 | 70 71 72
-1 6 4 | 8 7 5 | ? ? ?        73 74 75 | 76 77 78 | 79 80 81
+2 8 9 | 6 4 3 | 5 7 1        55 56 57 | 58 59 60 | 61 62 63  
+5 7 3 | 2 9 1 | 6 ? ?        64 65 66 | 67 68 69 | 70 71 72  
+1 6 4 | 8 7 5 | ? ? ?        73 74 75 | 76 77 78 | 79 80 81  
 </code></pre>
-<p>Look at the value in <code>Cell 05</code> (in the upper right). At this state, the only values it could be are 2 and 6 (this is the domain). The MRV for that cell is 2.</p>
+
+<p>Look at the value in <code>Cell 05</code> (in the upper right). At this state, the only values it could be are 2 and 6 (this is the domain). The MRV for that cell is 2.  </p>
+
 <h3 id="degreeheuristic">Degree Heuristic</h3>
+
 <p>If multiple values have the smallest domain, it resorts to a degree heuristic. The degree heuristic looks at how many other variables would be affected if the current value was assigned and tries to maximize this.</p>
-<p>Degree Heuristic when two cells have the same domain size:</p>
-<pre><code class="language-lang-none">4 1 ? | 3 ? ? | 8 ? 5        01 02 03 | 04 05 06 | 07 08 09
+
+<p>Degree Heuristic when two cells have the same domain size:  </p>
+
+<pre><code class="language-lang-none">4 1 ? | 3 ? ? | 8 ? 5        01 02 03 | 04 05 06 | 07 08 09  
 ? 3 ? | 1 ? ? | ? ? ?        10 11 12 | 13 14 15 | 16 17 18
 ? 5 ? | 7 ? ? | ? ? ?        19 20 21 | 22 23 24 | 25 26 27
 ------+-------+------        ---------+----------+---------
-8 2 5 | 4 3 7 | 1 6 9        28 29 30 | 31 32 33 | 34 35 36
+8 2 5 | 4 3 7 | 1 6 9        28 29 30 | 31 32 33 | 34 35 36  
 ? 9 ? | 5 8 ? | 4 ? ?        37 38 39 | 40 41 42 | 43 44 45
 ? 4 ? | 9 1 ? | ? ? ?        46 47 48 | 49 50 51 | 52 53 54
 ------+-------+------        ---------+----------+---------
-2 8 9 | 6 4 3 | 5 7 1        55 56 57 | 58 59 60 | 61 62 63
-5 7 3 | 2 9 1 | 6 ? ?        64 65 66 | 67 68 69 | 70 71 72
-1 6 4 | 8 7 5 | ? ? ?        73 74 75 | 76 77 78 | 79 80 81
+2 8 9 | 6 4 3 | 5 7 1        55 56 57 | 58 59 60 | 61 62 63  
+5 7 3 | 2 9 1 | 6 ? ?        64 65 66 | 67 68 69 | 70 71 72  
+1 6 4 | 8 7 5 | ? ? ?        73 74 75 | 76 77 78 | 79 80 81  
 </code></pre>
+
 <p>The function proceeds along and now is looking at <code>Cell 08</code> - where the value can only be 2 or 6. This MRV here is also 2, which means TableSalt resorts to the degree heuristic. The degree heuristic deals with the number of unknowns associated with a cell. For sudoku, that is the number of cells that aren't known in the column, row, or section of the cell in question. For <code>Cell 08</code>, this is 18 (4 for the row + 7 for the column + 7 for the section, and yes it overlaps and includes itself) and for <code>Cell 05</code> it is 13 (4 for the row + 3 for the column + 6 for the section). As such TableSalt will use <code>Cell 08</code> moving forward as it affects more values.</p>
+
 <h2 id="theproblem">The Problem...</h2>
-<p>I messed up - like really messed up on this one. I initially misread my AI notes and was using the number of constraints the cells were involved in for the degree heuristic.</p>
+
+<p>I messed up - like really messed up on this one. I initially misread my AI notes and was using the number of constraints the cells were involved in for the degree heuristic.  </p>
+
 <blockquote>
-<p>This seems worthless for sudoku. They all have the same number of constraints...</p>
+  <p>This seems worthless for sudoku. They all have the same number of constraints...</p>
 </blockquote>
+
 <p>That should've been the red flag. Whoops... The values were all 3 as each cell has <code>AllDiff</code> applied in the column, row, and section. Not good - I was counting up the wrong things... So I wrote a little for loop that actually got the number of affected cells and some more code that updated the values accordingly!! Major bug fixed (and a boat-load of time savings)!</p>
+
 <p>Interestingly enough, I found this bug after questioning this one itty bit of code: what should be done if the degree heuristics are the same?</p>
+
 <h2 id="meh">meh</h2>
+
 <p>That's right, I did nothing. Little did I know this was another mistake. I was writing the previous post on TableSalt and had linked the <a href="http://en.wikipedia.org/wiki/Look-ahead_(backtracking)">Look-ahead</a> article form Wikipedia, where this one little sentence caught my eye:</p>
+
 <blockquote>
-<p>Randomization is also sometimes used for choosing a variable or value. For example, if two variables are equally preferred according to some measure, the choice can be done randomly.</p>
+  <p>Randomization is also sometimes used for choosing a variable or value. For example, if two variables are equally preferred according to some measure, the choice can be done randomly.</p>
 </blockquote>
+
 <h2 id="randomyousay">RANDOM YOU SAY!</h2>
+
 <p>and that was that! So I added a little check to see if degree values were the same and to choose randomly between them if they were:</p>
-<pre><code class="language-lang-lua">if currentDegree &gt; smallestDegree then
+
+<pre><code class="language-lang-lua">if currentDegree &gt; smallestDegree then  
     index_count = 1
     indices[index_count] = 
-elseif currentDegree == smallestDegree then
+elseif currentDegree == smallestDegree then  
     index_count = index_count + 1
     indices[index_count] = i
-end
+end  
 </code></pre>
+
 <p>simple enough!</p>
+
 <h2 id="results">Results!</h2>
-<p>MAN OH MAN! So much time savings! Gotta fix them bugs and add some features!</p>
+
+<p>MAN OH MAN! So much time savings! Gotta fix them bugs and add some features!  </p>
+
 <h3 id="addingrandom">Adding Random</h3>
-<p>This was the first thing that was addressed. A <em>dramatic</em> decrease in times! Also, now there is a bit of variation in how long it takes to solve the problem. Regardless, it took my 222ms down to 150-180ms/puzzle range! A cool 40-70ms faster! and a few ms closer to the elusive 100ms!</p>
+
+<p>This was the first thing that was addressed. A <em>dramatic</em> decrease in times! Also, now there is a bit of variation in how long it takes to solve the problem. Regardless, it took my 222ms down to 150-180ms/puzzle range! A cool 40-70ms faster! and a few ms closer to the elusive 100ms!  </p>
+
 <h3 id="fixingupmydegreeheuristic">Fixing up my degree heuristic</h3>
+
 <p>This brought me down into the 90-100ms/puzzle range. An additional 50-90ms!!!! OH YES! THAT WONDROUS SUB 100MS TIME IS MINE! and I probably wouldn't even have gotten there if I hadn't started writing this blog - I likely would've wasted some time trying to get some functions written in C or something...</p>
-<p>I ran my (self-asserting!) tests, and was good to go! As such the code is up on <a href="https://github.com/fouriertransformer/TableSalt">GitHub</a>! Let me know if you have any other optimization tips! Otherwise I think I may be done working on TableSalt for a while!</p>
-</div>]]></content:encoded></item><item><title><![CDATA[TableSalt: optimizing code layout for speed in lua]]></title><description><![CDATA[<div class="kg-card-markdown"><p>A while back I wrote <a href="http://github.com/fouriertransformer/TableSalt">TableSalt</a> - a constraint satisfaction framework written in [currently pure] lua. Every now and again I'll revisit it and try to make it run faster and get rid of any bugs found along the way. For benchmarking I use my SudokuSolver on a test of</p></div>]]></description><link>http://localhost:2368/optimizing-code-layout-for-speed/</link><guid isPermaLink="false">5994f8815a1d7e048e72fc80</guid><category><![CDATA[TableSalt]]></category><dc:creator><![CDATA[Shakil Thakur]]></dc:creator><pubDate>Mon, 17 Nov 2014 00:36:59 GMT</pubDate><content:encoded><![CDATA[<div class="kg-card-markdown"><p>A while back I wrote <a href="http://github.com/fouriertransformer/TableSalt">TableSalt</a> - a constraint satisfaction framework written in [currently pure] lua. Every now and again I'll revisit it and try to make it run faster and get rid of any bugs found along the way. For benchmarking I use my SudokuSolver on a test of <a href="http://norvig.com/top95.txt">95 sudoku puzzles</a>.</p>
+
+<p>I ran my (self-asserting!) tests, and was good to go! As such the code is up on <a href="https://github.com/fouriertransformer/TableSalt">GitHub</a>! Let me know if you have any other optimization tips! Otherwise I think I may be done working on TableSalt for a while!</p>]]></content:encoded></item><item><title><![CDATA[TableSalt: optimizing code layout for speed in lua]]></title><description><![CDATA[<p>A while back I wrote <a href="http://github.com/fouriertransformer/TableSalt">TableSalt</a> - a constraint satisfaction framework written in [currently pure] lua. Every now and again I'll revisit it and try to make it run faster and get rid of any bugs found along the way. For benchmarking I use my SudokuSolver on a test of</p>]]></description><link>http://shakilthakur.com/optimizing-code-layout-for-speed/</link><guid isPermaLink="false">15c55e33-118b-4762-a904-93eff2082678</guid><category><![CDATA[TableSalt]]></category><dc:creator><![CDATA[Shakil Thakur]]></dc:creator><pubDate>Mon, 17 Nov 2014 00:36:59 GMT</pubDate><content:encoded><![CDATA[<p>A while back I wrote <a href="http://github.com/fouriertransformer/TableSalt">TableSalt</a> - a constraint satisfaction framework written in [currently pure] lua. Every now and again I'll revisit it and try to make it run faster and get rid of any bugs found along the way. For benchmarking I use my SudokuSolver on a test of <a href="http://norvig.com/top95.txt">95 sudoku puzzles</a>.</p>
+
 <p>My goal is a 100ms average. Back in May 2014 I was chilling at 337ms. Before these layout changes, I was at 253ms. Now I'm at 222ms and am only inching ever closer!</p>
+
 <h2 id="originalcodelayout">Original Code Layout</h2>
-<p>Initially I had a <code>cell</code> object, this is best thought of as an empty &quot;cell&quot; in sudoku or a variable in <a href="http://en.wikipedia.org/wiki/Constraint_satisfaction_problem">constraint satisfaction problems</a>. Each cell has a domain, value, and a reference to each of the constraints it is associated with.</p>
-<p>As such the code was pretty straigtforward:</p>
-<pre><code class="language-lang-lua">function cell:initialize(domain)
+
+<p>Initially I had a <code>cell</code> object, this is best thought of as an empty "cell" in sudoku or a variable in <a href="http://en.wikipedia.org/wiki/Constraint_satisfaction_problem">constraint satisfaction problems</a>. Each cell has a domain, value, and a reference to each of the constraints it is associated with.</p>
+
+<p>As such the code was pretty straigtforward:  </p>
+
+<pre><code class="language-lang-lua">function cell:initialize(domain)  
      self.domain = domain
      self.value = nil
      self.constraints = {}
  end
 </code></pre>
-<p>I needed a table of cells to keep track of all the cells:</p>
-<pre><code class="language-lang-lua">self.cells = {}
-for i = 1, self.size do
+
+<p>I needed a table of cells to keep track of all the cells:  </p>
+
+<pre><code class="language-lang-lua">self.cells = {}  
+for i = 1, self.size do  
     self.cells[i] = cell:new({unpack(domain)})
-end
+end  
 </code></pre>
+
 <p>The <code>{unpack()}</code> created a deepcopy for each <code>cell</code>'s domain. <code>unpack</code> is a built-in lua function that explodes a table, the curly brackets around it create a new version and a deep copy is born!</p>
+
 <h2 id="thebackup">The Backup</h2>
-<p>While writing TableSalt, I wrote a ForwardCheck (or <a href="http://en.wikipedia.org/wiki/Look-ahead_(backtracking)">look-ahead</a>) function that needed to backup and restore the current state of the cells. Easy enough:</p>
-<pre><code class="language-lang-lua">function TableSalt:backupCells()
+
+<p>While writing TableSalt, I wrote a ForwardCheck (or <a href="http://en.wikipedia.org/wiki/Look-ahead_(backtracking)">look-ahead</a>) function that needed to backup and restore the current state of the cells. Easy enough:  </p>
+
+<pre><code class="language-lang-lua">function TableSalt:backupCells()  
     local serial = {{}, {}}
     for i = 1, self.size do
         serial[1][i] = {unpack(self.cells[i].domain)}
@@ -103,28 +172,36 @@ end
     return serial
 end
 
-function TableSalt:restoreCells(serial)
+function TableSalt:restoreCells(serial)  
     for i=1, self.size do
         self.cells[i].domain = serial[1][i]
         self.cells[i].value = serial[2][i]
     end
-end
+end  
 </code></pre>
+
 <h2 id="theproblem">The Problem.</h2>
+
 <p>This was slow. When I ran the code against a profiler, the code backup and <code>AllDiff</code> constraint were usually the prime culprits of wasting time. On my [unrealistic?] goal towards 100ms, wasting time on backups and restores was not an option. I read up on <a href="http://www.lua.org/gems/sample.pdf">optimizing lua code</a> and posted on <a href="http://stackoverflow.com/questions/26453830/optimizing-a-lua-table-backup">stackoverflow</a> looking for help.</p>
+
 <h2 id="speedingitallup">SPEEDING IT ALL UP!</h2>
-<p>I got rid of the cell class. Arguably, it's bad code design, but I did it in the name of speed. Here's what the initializer code became:</p>
-<pre><code class="language-lang-lua">self.cellValue = {}
-self.cellDomain = {}
-self.cellConstraint = {}
-for i = 1, self.size do
-	self.cellConstraint[i] = {}
-	self.cellDomain[i] = {unpack(domain)}
-end
+
+<p>I got rid of the cell class. Arguably, it's bad code design, but I did it in the name of speed. Here's what the initializer code became:  </p>
+
+<pre><code class="language-lang-lua">self.cellValue = {}  
+self.cellDomain = {}  
+self.cellConstraint = {}  
+for i = 1, self.size do  
+    self.cellConstraint[i] = {}
+    self.cellDomain[i] = {unpack(domain)}
+end  
 </code></pre>
+
 <p>and as some of you lua aficionados might notice - I could've used a <code>self.cells = {}</code> and made each of those tables into <code>self.cells.value</code>, <code>self.cells.domain</code>, and <code>self.cells.constrains</code>, but I would gain ~4ms if I did so. If I ever get sub-100ms, I may consider adding it back in for the sake of better code design.</p>
-<p>Anyway, this allowed me to do was create clones quickly and avoid the need to &quot;restore&quot; the values to their initial state. Now the backup function (which looks VERY similar to before) is:</p>
-<pre><code class="language-lang-lua">local function backupCells(cellDomain, cellValue)
+
+<p>Anyway, this allowed me to do was create clones quickly and avoid the need to "restore" the values to their initial state. Now the backup function (which looks VERY similar to before) is:  </p>
+
+<pre><code class="language-lang-lua">local function backupCells(cellDomain, cellValue)  
     local cellDomain, cellValue = cellDomain, cellValue
     local serial = {{}, {}}
     for i = 1, #cellDomain do
@@ -132,13 +209,17 @@ end
         serial[2][i] = cellValue[i]
     end
     return serial
-end
+end  
 </code></pre>
-<p>and restore has become a quick two-liner:</p>
-<pre><code class="language-lang-lua">self.cellDomain = cellCopy[1]
-self.cellValue = cellCopy[2]
+
+<p>and restore has become a quick two-liner:  </p>
+
+<pre><code class="language-lang-lua">self.cellDomain = cellCopy[1]  
+self.cellValue = cellCopy[2]  
 </code></pre>
+
 <p>This provided a <em>fairly</em> significant speedup! On the sudoku benchmark, I now average ~222ms/puzzle - a whopping <strong>31ms</strong> speedup from the 253ms before it.</p>
+
 <h2 id="thefuture">The Future</h2>
-<p>I'm starting to think I'm reaching the end of pure-lua optimizations. I want to convert the cell backup and parts of the <code>AllDiff</code> function to C and see if that offers any significant speedup. If anyone has any other suggestions for speed (the code can be found on <a href="https://github.com/FourierTransformer/TableSalt">GitHub</a>) - please let me know I'd love to hear it!</p>
-</div>]]></content:encoded></item></channel></rss>
+
+<p>I'm starting to think I'm reaching the end of pure-lua optimizations. I want to convert the cell backup and parts of the <code>AllDiff</code> function to C and see if that offers any significant speedup. If anyone has any other suggestions for speed (the code can be found on <a href="https://github.com/FourierTransformer/TableSalt">GitHub</a>) - please let me know I'd love to hear it!</p>]]></content:encoded></item></channel></rss>
